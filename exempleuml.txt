@@ -2,19 +2,28 @@
 
 interface Machine {
     + lancer() : void
-    + afficherResultatt() : void
+    + afficherResultat() : void
     + Gains() : void
 }
 
-class MachineRoulette {
-    - etat : boolean
-    - niveauExperienceMin : int
-    - rouges : ArrayList<Integer>
-    - noirs : ArrayList<Integer>
+class MachineAllIn {
+    - nom : String
+    - tab : ArrayList<String>
+    - difficulte : int
+    - gain : int
+    - mise : int
+    - victoires : int
+    - defaites : int
+    
+
     + lancer() : void
-    + jouer(joueur : Joueur) : void
-    + peutJouer(joueur : Joueur) : boolean
-    - effectuerPari(joueur : Joueur) : void
-    - initialiserRouges() : ArrayList<Integer>
-    - initialiserNoirs() : ArrayList<Integer>
+    + afficherResultat(tab : ArrayList<String>) : void
+    + verifierResultat(tab : ArrayList<String>) : int
+    + gains(x : int) : void
+    - trouverSymbole1() : int
+    - trouverSymbole2() : int
+    - trouverSymbole3() : int
+    + mise() : int
+    + niveauDifficulte() : int
+    + nombreAleatoire() : int
 }
