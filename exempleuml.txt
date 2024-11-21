@@ -3,7 +3,9 @@
 interface Machine {
     + lancer() : void
     + afficherResultat() : void
-    + Gains() : void
+    + getGains() : int
+    + getMise() : int
+    + getGainsTotaux() : int
 }
 
 class MachineAllIn {
@@ -26,4 +28,26 @@ class MachineAllIn {
     + mise() : int
     + niveauDifficulte() : int
     + nombreAleatoire() : int
+}
+
+class MagicMoolahExtravaganza {
+    - tableau : String[3][4]
+    - mise : int
+    - gain : int
+    - gain_total : int
+    - description : String
+    - volatilite : int
+    - gain_max : int
+    
+    + lancer() : void
+    + evenement_identique() : String
+    + evenement_suite() : void
+    + evenement_gagnant() : String
+    + modifMise(direction : String) : void
+    + getGains() : int
+    + getMise() : int
+    + getGainsTotaux() : int
+    + ajouter_exp() : void
+    + afficherTableau() : void
+    + afficher_info() : void
 }
