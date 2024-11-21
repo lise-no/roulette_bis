@@ -40,9 +40,9 @@ class MagicMoolahExtravaganza {
     - gain_max : int
     
     + lancer() : void
-    + evenement_identique() : String
-    + evenement_suite() : void
-    + evenement_gagnant() : String
+    - evenement_identique() : String
+    - evenement_suite() : void
+    - evenement_gagnant() : String
     + modifMise(direction : String) : void
     + getGains() : int
     + getMise() : int
