@@ -1,0 +1,104 @@
+@startuml
+
+Interface Machine{
+  + lancer(): void
+  + afficherResultat(): void
+  + verifierResultat(): void
+  + gains(): void
+}
+
+Class Joueur{
+  - nom: String
+  - niveau: int
+  - niveauSuivant: int
+  - barreExperience: int
+  - solde: int
+  + nommer(): void
+  + getSolde(): int
+  + ajouterSolde(montant: int): void
+  + retirerSolde(montant: int): void
+  + ajouterExp(): void
+  + afficherInfo(): void
+}
+
+class Roulette {
+    -etat: boolean
+    -redNumbers: List<Integer>
+    -blackNumbers: List<Integer>
+    -niveauExpNecessaire: int
+    +lancer()
+    +afficherResultat()
+    +verifierResultat()
+    +gains()
+    +peutJouer(joueur: Joueur): boolean
+    +definirMise(mise: int)
+    +effectuerPari(pari: int)
+}
+class MachineAllIn {
+    - nom : String
+    - tab : ArrayList<String>
+    - difficulte : int
+    - gain : int
+    - mise : int
+    - victoires : int
+    - defaites : int
+    
+
+    + lancer() : void
+    + afficherResultat(tab : ArrayList<String>) : void
+    + verifierResultat(tab : ArrayList<String>) : int
+    + gains(x : int) : void
+    - trouverSymbole1() : int
+    - trouverSymbole2() : int
+    - trouverSymbole3() : int
+    + mise() : int
+    + niveauDifficulte() : int
+    + nombreAleatoire() : int
+}
+
+class MagicMoolahExtravaganza {
+    - tableau : String[3][4]
+    - mise : int
+    - gain : int
+    - gain_total : int
+    - description : String
+    - volatilite : int
+    - gain_max : int
+    
+    + lancer() : void
+    - evenement_identique() : String
+    - evenement_suite() : void
+    - evenement_gagnant() : String
+    + modifMise(direction : String) : void
+    + getGains() : int
+    + getMise() : int
+    + getGainsTotaux() : int
+    + ajouter_exp() : void
+    + afficherTableau() : void
+    + afficher_info() : void
+}
+Class Casino{
+    - machines: Machine[3]
+    + ajouterMachine(machine: Machine): void
+    + afficherMachine(): void
+}
+Class Statistiques{
+  - gainsTotaux: int
+  - relationMachineGains: Map<String, int>
+  - nombreParties: int
+  - totalMises: int
+  - nombreMises: int
+  + ajouterGainMachine(machine: String, gain: int): void
+  + ajouterPartie(): void
+  + afficherStatistiques(): void
+  + ajouterMise(mise: int): void
+  + getMiseMoyenne(): float
+  + getGainsMoyens(): float
+}
+Relationships
+-------------
+Machine <|-- AllIn
+Machine <|-- Roulette
+Machine <|-- MagicMoolahExtravaganza
+Joueur --> Statistiques
+Casino --> Machine
