@@ -1,4 +1,4 @@
-package casino;
+import java.util.Random;
 
 public class AllIn implements Machine {
     private String[] tableau = new String[3];

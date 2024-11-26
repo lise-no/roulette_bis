@@ -1,6 +1,6 @@
-package casino;
 
-public class MagicMoolah implements Machine {
+
+public class Roulette implements Machine {
     private int res1; // Le nombre renvoyé
     private String res2; // La couleur renvoyée
     private int pariNb; // Le pari du joueur sur les nombres
@@ -38,3 +38,4 @@ public class MagicMoolah implements Machine {
         // Permet au joueur de poser son/ses paris
     }
 }
+

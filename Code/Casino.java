@@ -1,5 +1,3 @@
-package casino;
-
 import java.util.List;
 
 public class Casino {
