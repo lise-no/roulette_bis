@@ -24,27 +24,35 @@ public class AllIn implements Machine {
 
     public void lancer() {
         // lance une partie en appelant les autres méthodes de la classe
-        boolean test = false;
+        boolean test = false, rejouer = true;
+        Scanner console = new Scanner(System.in);
 
-        // fixation de la mise, vérification de la mise et choix de la difficulté
         System.out.println(this.description);
-        modifMise();
-        nivDifficulte();
-        while (test == false) {
-            test = verifMise();
+
+        // permet de rejouer immédiatement
+        while (rejouer) {
+            // fixation de la mise, vérification de la mise et choix de la difficulté
+            modifMise();
+            nivDifficulte();
+            while (test == false) {
+                test = verifMise();
+            }
+
+            // nombres dans tableau
+            this.tab[0] = nbAleatoire();
+            this.tab[1] = nbAleatoire();
+            this.isSmaller = (this.tab[0] < this.tab[1]) ? 0 : 1; // condition ternaire
+
+            // symbole en fonction de la difficulté
+            tab[2] = trouverSymbole();
+
+            // affichage tableau
+            afficherResultat();
+            verifierResultat();
+
+            System.out.println("Voulez-vous rejouer ? (true = oui, false = non)");
+            rejouer = console.nextBoolean();
         }
-
-        // nombres dans tableau
-        this.tab[0] = nbAleatoire();
-        this.tab[1] = nbAleatoire();
-        this.isSmaller = (this.tab[0] < this.tab[1]) ? 0 : 1; // condition ternaire
-
-        // symbole en fonction de la difficulté
-        tab[2] = trouverSymbole();
-
-        // affichage tableau
-        afficherResultat();
-        verifierResultat();
     }
 
     public void afficherResultat() {
