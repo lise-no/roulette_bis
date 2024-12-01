@@ -2,13 +2,13 @@ import java.util.ArrayList;// pour les listes
 import java.util.Random;// pour générer des nombres aléatoires
 import java.util.Scanner;//pour lire les entrées clavier
 
-public class MachineRoulette implements Machine{
+public class Roulette implements Machine{
 private boolean etat; // Indique si la machine est allumée
 private final int niveauExperienceMin; // Niveau minimum pour jouer
 private final ArrayList<Integer> rouges; // Liste des numéros rouges
 private final ArrayList<Integer> noirs;  // Liste des numéros noirs
 
-public  MachineRoulette(int niveauExperienceMin) {
+public  Roulette(int niveauExperienceMin) {
     this.etat = false;
     this.niveauExperienceMin = niveauExperienceMin;
     this.rouges = initialiserRouges();
@@ -18,13 +18,13 @@ public  MachineRoulette(int niveauExperienceMin) {
 @Override
 public void lancer() {
     this.etat = true;
-    System.out.println("Machine Roulette démarrée.");
+    System.out.println(" Roulette démarrée.");
 }
 
 @Override
 public void jouer(Joueur joueur) {
     if (!etat) {
-        System.out.println("La machine est éteinte.");
+        System.out.println("La roulette est éteinte.");
         return;
     }
 
