@@ -18,13 +18,13 @@ public  Roulette(int niveauExperienceMin) {
 @Override
 public void lancer() {
     this.etat = true;
-    System.out.println(" Roulette démarrée.");
+    System.out.println("Roulette démarrée.");
 }
 
 @Override
 public void jouer(Joueur joueur) {
     if (!etat) {
-        System.out.println("La roulette est éteinte.");
+        System.out.println("La machine est éteinte.");
         return;
     }
 
@@ -158,5 +158,12 @@ private void effectuerPari(Joueur joueur) {
         }
         return noirs;
     }
-}
-
+    public class Main {
+            Joueur joueur = new Joueur("Alice", 50, 100);
+            MachineRoulette machine = new MachineRoulette(30);
+            machine.lancer();
+            System.out.println("Bienvenue à la roulette, " + joueur.getNom() + " !");
+            machine.jouer(joueur);
+            System.out.println("Vous avez maintenant " + joueur.getJetons() + " jetons.");
+        }
+    }
