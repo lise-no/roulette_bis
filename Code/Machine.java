@@ -1,6 +1,5 @@
 public interface Machine {
-    void lancer();
+    void lancer(Joueur joueur);
     void afficherResultat();
-    void verifierResultat();
-    //void gains();
+    void verifierResultat(Joueur joueur);
 }
