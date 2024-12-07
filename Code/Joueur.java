@@ -116,8 +116,25 @@ public class Joueur {
         this.nom = sc.nextLine();  // Lit l'entrée et l'assigne au nom du joueur
         difficulte(sc);  // Choisit la difficulté et initialise le solde
     }
+    //pour accéder au nom de joueur dans les autres class
+    public String getNom(){
+        return this.nom;
 
+    }
+    //pour accéder au solde du joueur 
     public int getSolde(){
         return solde;
+    }
+    //pour accéder a l'expérience du joueur 
+    public int getBarreExp(){
+        return this.barreExperience;
+    }
+    //pour accéder au niveau du joueur 
+    public int getNiveau(){
+        return this.niveau;
+    }
+    //pour accéder au niveau
+    public int ajouterNiveau(){
+       return this.niveau++;
     }
 }
