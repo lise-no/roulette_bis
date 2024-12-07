@@ -16,12 +16,12 @@ public class Casino {
         while (continuer) {
             // Affichage du menu principal
             System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisament de lignes pour faire apparaitre le terminal vide)
-            System.out.println("--+" + joueur.violet + '-' + joueur.jaune + '-' + joueur.cyan + '-'); // Permet de savoir où on se trouve
-            System.out.println(joueur.bleu + "=================Menu du Casino Magnifico=================" + joueur.resetCouleur);
+            System.out.println("--+" + Affichage.violet + '-' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
+            System.out.println(Affichage.bleu + "=================Menu du Casino Magnifico=================" + Affichage.resetCouleur);
             System.out.println("\nQue voulez-vous faire ?");
-            System.out.println(joueur.violet + "1. Jouer à Magic Moolah" + joueur.resetCouleur); // à remplacer par un menu de selection de machine
-            System.out.println(joueur.vert + "2. Afficher vos informations" + joueur.resetCouleur);
-            System.out.println(joueur.rouge + "3. Quitter" +joueur.resetCouleur);
+            System.out.println(Affichage.violet + "1. Jouer à Magic Moolah" + Affichage.resetCouleur); // à remplacer par un menu de selection de machine
+            System.out.println(Affichage.vert + "2. Afficher vos informations" + Affichage.resetCouleur);
+            System.out.println(Affichage.rouge + "3. Quitter" +Affichage.resetCouleur);
             
             int choix = 0; // Initialiser la variable de choix
     
@@ -33,7 +33,7 @@ public class Casino {
                     sc.nextLine();  // Consommer la ligne restante
                     break; // Sortir de la boucle si la saisie est valide
                 } catch (InputMismatchException e) {
-                    System.out.println(joueur.rouge + "\nErreur : Veuillez entrer un nombre entier valide." + joueur.resetCouleur);
+                    System.out.println(Affichage.rouge + "\nErreur : Veuillez entrer un nombre entier valide." + Affichage.resetCouleur);
                     sc.nextLine(); // Consommer l'entrée invalide
                 }
             }
@@ -61,7 +61,7 @@ public class Casino {
                     System.out.println("\nMerci d'avoir joué !");
                     break;
                 default:
-                    System.out.println(joueur.rouge + "\nChoix invalide." + joueur.resetCouleur);
+                    System.out.println(Affichage.rouge + "\nChoix invalide." + Affichage.resetCouleur);
                     System.out.println("\nAppuyez sur entrée pour mettre un autre choix.");
                     sc.nextLine();  // Consommer la ligne restante
             }

@@ -7,15 +7,6 @@ public class Joueur {
     private int prochainNiveau;
     private int barreExperience;
     private int solde;
-    // Permet de changer les couleurs (https://stackoverflow.com/questions/5762491/how-to-print-color-in-console-using-system-out-println)
-    public static final String resetCouleur = "\u001B[0m";
-    public static final String rouge = "\u001B[31m";
-    public static final String bleu = "\u001B[34m";
-    public static final String vert = "\u001B[32m";
-    public static final String jaune = "\u001B[33m";
-    public static final String violet = "\u001B[35m";
-    public static final String cyan = "\u001B[36m";
-    public static final String blanc = "\u001B[37m";
 
     // Constructeur
     public Joueur() {
@@ -27,27 +18,28 @@ public class Joueur {
     }
 
     // Choisir la difficulté et initialiser le solde
-    public void difficulte(Scanner sc, Joueur joueur) {
+    public void difficulte(Scanner sc) {
         int choix;
         System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisament de lignes pour faire apparaître le terminal vide)
-        System.out.println("-+-" + joueur.violet + '-' + joueur.jaune + '-' + joueur.cyan + '-'); // Permet de savoir où on se trouve
-        System.out.println(bleu + "======Choix difficulté======\n" + resetCouleur);
+        System.out.println("-+-" + Affichage.violet + '-' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
+        System.out.println(Affichage.bleu + "======Choix difficulté======\n" + Affichage.resetCouleur);
         System.out.println("Bonjour " + nom + " choisissez votre difficulté !\n");
-        System.out.println(vert + "1. Départ avec 100k jetons." + resetCouleur);
-        System.out.println(jaune + "2. Départ avec 10k jetons." + resetCouleur);
-        System.out.println(rouge + "3. Départ avec 1k jetons." + resetCouleur);
+        System.out.println(Affichage.vert + "1. Départ avec 100k jetons." + Affichage.resetCouleur);
+        System.out.println(Affichage.jaune + "2. Départ avec 10k jetons." + Affichage.resetCouleur);
+        System.out.println(Affichage.rouge + "3. Départ avec 1k jetons." + Affichage.resetCouleur);
         
         // Boucle pour s'assurer que l'utilisateur entre un entier valide
         while (true) {
             try {
+                System.out.println("Votre choix : ");
                 choix = sc.nextInt();
                 if (choix < 1 || choix > 3) {
-                    throw new IllegalArgumentException("Choix invalide, veuillez entrer 1, 2 ou 3.");
+                    throw new IllegalArgumentException(Affichage.rouge + "Choix invalide, veuillez entrer 1, 2 ou 3." + Affichage.resetCouleur);
                 }
                 break; // Si l'entrée est correcte, on sort de la boucle
             } catch (InputMismatchException e) {
                 // Si l'entrée n'est pas un entier
-                System.out.println("Erreur: Veuillez entrer un nombre entier.");
+                System.out.println(Affichage.rouge + "Erreur: Veuillez entrer un nombre entier." + Affichage.resetCouleur);
                 sc.nextLine(); // Consommer la ligne incorrecte
             } catch (IllegalArgumentException e) {
                 // Si l'utilisateur choisit un nombre en dehors des options disponibles
@@ -75,7 +67,7 @@ public class Joueur {
         if (solde - montant >= 0) {
             this.solde += montant;  // On ajoute le montant au solde
         } else {
-            System.out.println(rouge + "Solde insuffisant." + resetCouleur);
+            System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
         }
     }
 
@@ -88,20 +80,20 @@ public class Joueur {
             this.niveau++;
             this.barreExperience -= this.prochainNiveau;  // Réinitialise l'expérience en excédent
             this.prochainNiveau = (int) (this.prochainNiveau * 1.5);  // Augmenter le seuil pour le prochain niveau
-            System.out.println(cyan + "Félicitations, vous êtes passé au niveau " + this.niveau + "!\n" + resetCouleur); // préviens de l'augmentation de niveau en bleu
+            System.out.println(Affichage.cyan + "Félicitations, vous êtes passé au niveau " + this.niveau + "!\n" + Affichage.resetCouleur); // préviens de l'augmentation de niveau en bleu
         }
     }
 
     // Méthode pour afficher les informations du joueur
     public void afficherInfo(Scanner sc, Joueur joueur) {
             System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisament de lignes pour faire appaitre le terminal vide)
-            System.out.println("--+" + joueur.violet + '-' + joueur.jaune + '-' + joueur.cyan + '-'); // Permet de savoir où on se trouve
-            System.out.println(bleu + "======Infos " + this.nom + "===========" + resetCouleur);
-            System.out.println(vert + "\nNom du joueur : " + nom);
-            System.out.println(cyan +"Niveau : " + niveau);
+            System.out.println("--+" + Affichage.violet + '-' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
+            System.out.println(Affichage.bleu + "======Infos " + this.nom + "===========" + Affichage.resetCouleur);
+            System.out.println(Affichage.vert + "\nNom du joueur : " + nom);
+            System.out.println(Affichage.cyan +"Niveau : " + niveau);
             System.out.println("Expérience : " + barreExperience + "/" + prochainNiveau);
-            System.out.println(jaune +"Solde : " + solde + " jetons" + resetCouleur);
-            System.out.println(bleu + "\n==============================\n" + resetCouleur);
+            System.out.println(Affichage.jaune +"Solde : " + solde + " jetons" + Affichage.resetCouleur);
+            System.out.println(Affichage.bleu + "\n==============================\n" + Affichage.resetCouleur);
             System.out.println("Appuyez sur entrée pour revenir au menu.");
             // Permet de vider le scanner
             sc.nextLine();
@@ -110,11 +102,11 @@ public class Joueur {
     // Méthode pour demander le nom du joueur
     public void initialisationJoueur(Scanner sc, Joueur joueur) {
         System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisament de lignes pour faire appaitre le terminal vide)
-        System.out.println("+--" + joueur.violet + '-' + joueur.jaune + '-' + joueur.cyan + '-'); // Permet de savoir où on se trouve
-        System.out.println(bleu + "=================Création du joueur=================" + resetCouleur);
+        System.out.println("+--" + Affichage.violet + '-' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
+        System.out.println(Affichage.bleu + "=================Création du joueur=================" + Affichage.resetCouleur);
         System.out.print("Entrez votre nom : ");
         this.nom = sc.nextLine();  // Lit l'entrée et l'assigne au nom du joueur
-        difficulte(sc, joueur);  // Choisit la difficulté et initialise le solde
+        difficulte(sc);  // Choisit la difficulté et initialise le solde
     }
 
     public int getSolde(){
