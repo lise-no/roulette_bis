@@ -70,6 +70,14 @@ public class Joueur {
             System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
         }
     }
+    /*// Méthode pour modifier le solde
+    public void modifSolde(int montant) {
+        if (montant < 0 && solde + montant < 0) { // Vérification pour les pertes
+            System.out.println("Solde insuffisant. Impossible de miser ou de retirer " + Math.abs(montant) + " jetons.");
+        } else {
+            this.solde += montant;
+        }
+    }*/
 
     // Méthode pour gagner de l'expérience
     public void gagnerExperience(int experienceGagnee) {
