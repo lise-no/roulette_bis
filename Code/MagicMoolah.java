@@ -27,28 +27,25 @@ public class MagicMoolah implements Machine{
     }
 
     @Override
-    // Lancer un tirage après avoir vérifié le solde du joueur
-    public void lancer(Joueur joueur) throws IllegalArgumentException {
-        // Vérifier que le joueur a assez de jetons pour la mise
-        if (joueur.getSolde() < mise) {
-            throw new IllegalArgumentException("Vous n'avez pas assez de jetons pour lancer la machine. Votre solde est insuffisant.");
-        }
-
+    public void lancer(Joueur joueur) {
         // Si la mise est valide, procéder au tirage
         // On vide les compteurs
         reset();
+        
         // On parcours le tableau afin de le remplir
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
-                // Pour chaque case de notre tableau, on va faire appelle à la méthode tirerSymbole
                 rouleaux[i][j] = tirerSymbole(symboles, probabilites);
             }
         }
-        // On affiche les rouleaux remplis
+        
+        // On affiche le rsultat
         afficherResultat();
+
         // On vérifie la présence d'événements pour calculer les gains
         verifierResultat(joueur);
-}
+    }
+    
 
 
     // Tire des symboles par apport à la probabilité associée à chaque symbole 
@@ -91,7 +88,7 @@ public class MagicMoolah implements Machine{
         }
         System.out.println(); // Espace entre les lancers
     }
-
+    
     // Calculer les gains et les afficher
     @Override
     public void verifierResultat(Joueur joueur){
@@ -100,7 +97,7 @@ public class MagicMoolah implements Machine{
             event = false; // On met event à false pour verifier si les evenements suivants sont réalisés
             eventAligne(i); // On verifie si l'evenement de l'alignement est réalisé, si oui alors on calcul les gains lié à cet evenement
             if(event){
-                System.out.println(joueur.vert + "Aligmement sur la ligne " + (i+1) + " avec " + rouleaux[i][0] + joueur.resetCouleur + '\n'); // Si oui pour l'alignement alors on previens le joueur
+                System.out.println(Affichage.vert + "Aligmement sur la ligne " + (i+1) + " avec " + rouleaux[i][0] + Affichage.resetCouleur + '\n'); // Si oui pour l'alignement alors on previens le joueur
             }
             // On parcours le tableau et on compte les diamants
             for(int j = 0; j < 4; j++){
@@ -112,7 +109,7 @@ public class MagicMoolah implements Machine{
         event = false; // On remet à false au cas où il y a un alignement
         eventDiamant(); // On verifie si l'evenement diamant est réalisé, si oui alors on calcul les gains lié à cet evenement
         if(event){
-            System.out.println(joueur.cyan + "Vous avez trouvé " + compteurDiamant + joueur.resetCouleur + " 💎 ! \n"); // Si oui pour les diamants alors on previens le joueur
+            System.out.println(Affichage.cyan + "Vous avez trouvé " + compteurDiamant + Affichage.resetCouleur + " 💎 ! \n"); // Si oui pour les diamants alors on previens le joueur
         }
     }
 
@@ -176,15 +173,19 @@ public class MagicMoolah implements Machine{
         int totalMise = mise * 20; // La mise totale pour les 20 tirages
     
         if (joueur.getSolde() < totalMise) {
-            System.out.println("Erreur : Vous n'avez pas assez de jetons pour effectuer 20 tirages. Votre solde est insuffisant.");
+            System.out.println(Affichage.rouge + "Erreur : Vous n'avez pas assez de jetons pour effectuer 20 tirages. Votre solde est insuffisant." + Affichage.resetCouleur);
             return; // Arrêter l'exécution de la méthode si le solde est insuffisant
         }
     
         // Si le joueur a assez de jetons, procéder aux 20 tirages
         for (int i = 0; i < 20; i++) {
-            // On affiche le suivi des tirages
-            System.out.println("Tirage numéro " + (i + 1) + " :");
-            lancer(joueur); // Lancer un seul tirage
+            // On affiche le suivi des tirages et on affiche un message sur le tirage multiple rencontre une erreur
+            try {
+                System.out.println("Tirage numéro " + (i + 1) + " :");
+                lancer(joueur);  // Tentative de lancer un tirage
+            } catch (Exception e) {
+                System.out.println("Erreur lors du tirage : " + e.getMessage());
+            }
             // Incrémenter les gains et la mise
             gainMultiple += gain;
             miseMultiple += mise;
@@ -224,7 +225,7 @@ public class MagicMoolah implements Machine{
         miseTotale += miseMultiple;
 
         // Afficher le bilan du tirage multiple
-        System.out.println(joueur.bleu + "🎰 Résumé des tirages multiples 🎰" + joueur.resetCouleur);
+        System.out.println(Affichage.bleu + "🎰 Résumé des tirages multiples 🎰" + Affichage.resetCouleur);
         System.out.println("--------------------------------");
         System.out.println("Vous avez effectué 20 tirages.");
         System.out.println("Vous avez misé " + miseMultiple + " jetons.");
@@ -248,7 +249,7 @@ public class MagicMoolah implements Machine{
         miseTotale += mise;
 
         // Afficher le bilan du tirage simple
-        System.out.println(joueur.bleu + "🎰 Résumé du tirage simple 🎰" + joueur.resetCouleur);
+        System.out.println(Affichage.bleu + "🎰 Résumé du tirage simple 🎰" + Affichage.resetCouleur);
         System.out.println("----------------------------");
         System.out.println("Vous avez misé " + mise + " jetons.");
         System.out.println("Vous avez gagné " + gain + " jetons.");
@@ -256,79 +257,127 @@ public class MagicMoolah implements Machine{
         System.out.println("==========================================");
         System.out.println("Bonne chance pour le prochain tirage!");
     }
-
+      
     // Modifie la mise avec validation
-    public void modifMise(int nouvelleMise, Joueur joueur) throws IllegalArgumentException {
-        // Vérifie si la mise est positive
-        if (nouvelleMise <= 0) {
-            throw new IllegalArgumentException("La mise doit être un nombre positif.");
-        }
+    public void modifMise(Joueur joueur, Scanner sc) {
+        // On met à false par défaut pour vérifier la mise
+        boolean validMise = false;
+        
+        // Une boucle pour répéter les vérifications si c'est faux
+        while (!validMise) {
+            try {
+                // Demande à l'utilisateur de saisir une nouvelle mise
+                System.out.print("Entrez votre mise: ");
+                int nouvelleMise = 0;
+                
+                // Vérifie si l'entrée est bien un entier
+                if (sc.hasNextInt()) {
+                    nouvelleMise = sc.nextInt();
+                    
+                    // Vérifie si la mise est positive
+                    if (nouvelleMise <= 0) {
+                        throw new IllegalArgumentException("La mise doit être un nombre positif.");
+                    }
     
-        // Vérifie si la mise dépasse le solde du joueur
-        if (nouvelleMise > joueur.getSolde()) {
-            throw new IllegalArgumentException("Vous n'avez pas assez de jetons pour cette mise.");
-        }
+                    // Vérifie si la mise dépasse le solde du joueur
+                    if (nouvelleMise > joueur.getSolde()) {
+                        throw new IllegalArgumentException(Affichage.resetCouleur + "Vous n'avez pas assez de jetons pour cette mise." + Affichage.resetCouleur);
+                    }
     
-    // Si aucune exception n'est lancée, on applique la mise
-    this.mise = nouvelleMise;
-}
+                    // Si la mise est valide, on l'applique
+                    this.mise = nouvelleMise;
+                    validMise = true; // La mise est valide, on sort de la boucle
+                } else {
+                    // Si l'utilisateur entre quelque chose qui n'est pas un entier, on demande de saisir un nombre
+                    System.out.println(Affichage.rouge + "Erreur : Veuillez entrer un nombre entier." + Affichage.resetCouleur);
+                    sc.nextLine(); // Consomme l'entrée invalide pour éviter une boucle infinie
+                }
+            } catch (IllegalArgumentException e) {
+                // Affiche le message d'erreur et redemande une mise
+                System.out.println("Erreur: " + e.getMessage());
+            }
+        }
+    }
+    
+    
 
     // Demander à l'utilisateur s'il veut continuer à jouer
-    public boolean demanderContinuer(Scanner sc){
+    public boolean demanderContinuer(Scanner sc, Joueur joueur) {
         System.out.print("Voulez-vous continuer à jouer ? (Oui/Non) : ");
-        // On prends l'entrée de l'utilisateur
-        String reponse = sc.nextLine().toLowerCase();
-        // On prends sa réponse sous forme de booléen vrai si "oui", faux sinon
-        return reponse.equals("oui");
+        // On prend l'entrée de l'utilisateur
+        String reponse = sc.nextLine().trim().toLowerCase();
+        
+        try {
+            // Si la réponse est positive (oui, o, yes, y)
+            if (reponse.equals("oui") || reponse.equals("o") || reponse.equals("yes") || reponse.equals("y")) {
+                return true;
+            }
+            // Si la réponse est négative (non, n, no)
+            else if (reponse.equals("non") || reponse.equals("n") || reponse.equals("no")) {
+                return false;
+            } else {
+                // Si la réponse est invalide, on lance une exception
+                throw new IllegalArgumentException(Affichage.rouge + "Réponse invalide. Veuillez répondre par Oui/Non." + Affichage.resetCouleur);
+            }
+        } catch (IllegalArgumentException e) {
+            // Gestion de l'exception, on affiche le message d'erreur et on redemande la réponse
+            System.out.println(e.getMessage());
+            return demanderContinuer(sc, joueur);  // On retourne la valeur de l'appel récursif
+        }
     }
+    
+    
 
     // Méthode main pour relancer sans utiliser la classe main
     public void jouer(Joueur joueur, Scanner sc) {
-        // On met par défaut continuer à vrai afin de demander au joueur s'il voudra rejouer
-        boolean continuer = true;
-    
-        try {
-            // Demander une nouvelle mise
-            System.out.print("Entrez votre mise : ");
-            int nouvelleMise = 0;
-    
-            // S'assurer que l'utilisateur entre bien une valeur numérique
-            while (true) {
-                try {
-                    nouvelleMise = sc.nextInt();
-                    sc.nextLine();  // pour consommer la ligne restante
-                    // Si la mise est valide, sortir de la boucle
-                    break;
-                } catch (InputMismatchException e) {
-                    // Si l'utilisateur entre une valeur non numérique
-                    System.out.println("Erreur : La mise doit être un nombre entier. Veuillez réessayer.\nEntrez votre mise : ");
-                    sc.nextLine(); // Consommer l'entrée invalide
-                }
-            }
-    
-            // Appliquer la mise
-            modifMise(nouvelleMise, joueur);
-    
-            // Vérification avant de lancer
-            lancer(joueur); // Le lancement va maintenant vérifier si le joueur a suffisamment de jetons
+        try {    
+            // Changer la mise
+            modifMise(joueur, sc);
         } catch (IllegalArgumentException e) {
             // Afficher un message d'erreur si la mise n'est pas valide ou si le joueur n'a pas assez de jetons
             System.out.println("Erreur : " + e.getMessage());
         }
-    
-        // Tant que le joueur veut rejouer
+
+        // On lance le menu de la machine
+        menuMagicMoolah(joueur, sc);
+    }
+
+    // Menu pour se déplacer dans la machine
+    public void menuMagicMoolah(Joueur joueur, Scanner sc) {
+        // On met par défaut continuer à vrai afin de demander au joueur s'il voudra rejouer
+        boolean continuer = true;
         while (continuer) {
             System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisamment de lignes pour faire apparaître le terminal vide)
-            System.out.println(joueur.violet + "=================MagicMoolah=================\n" + joueur.resetCouleur);
+            System.out.println("---" + Affichage.violet + '+' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
+            System.out.println(Affichage.violet + "=================MagicMoolah=================\n" + Affichage.resetCouleur);
             System.out.println("Choisissez l'option :");
-            System.out.println(joueur.jaune + "1. Lancer un tirage simple");
-            System.out.println(joueur.jaune + "2. Lancer un tirage multiple");
-            System.out.println(joueur.vert + "3. Afficher le total de jetons misé et gagné" + joueur.resetCouleur);
+            System.out.println(Affichage.jaune + "1. Lancer un tirage simple (Un seul tirage)");
+            System.out.println(Affichage.jaune + "2. Lancer un tirage multiple (20 tirages)");
+            System.out.println(Affichage.vert + "3. Afficher le total de jetons misé et gagné" + Affichage.resetCouleur);
             System.out.print("Votre choix : ");
-            int choix = sc.nextInt();
     
-            // On reset le scanner pour pouvoir l'utiliser dans la méthode demanderContinuer sinon il reste avec la valeur précédente et ne redemande pas une entrée au prochain appel
-            sc.nextLine();
+            int choix = -1; // Initialisation par une valeur non valide
+            boolean choixValide = false; // Flag pour vérifier que l'utilisateur fait un choix valide
+    
+            // Boucle pour garantir que l'entrée est correcte
+            while (!choixValide) {
+                try {
+                    choix = sc.nextInt(); // Lecture du choix de l'utilisateur
+                    // Vérifier que le choix est dans la plage valide (1, 2, 3)
+                    if (choix >= 1 && choix <= 3) {
+                        choixValide = true; // Le choix est valide, on sort de la boucle
+                    } else {
+                        System.out.println(Affichage.rouge + "Choix invalide. Veuillez choisir un chiffre entre 1 et 3." + Affichage.resetCouleur);
+                        sc.nextLine(); // Consommer la ligne pour éviter les erreurs futures
+                        System.out.print("Votre choix : "); // Redemander l'entrée
+                    }
+                } catch (InputMismatchException e) {
+                    // Si l'utilisateur entre quelque chose de non numérique
+                    System.out.println(Affichage.rouge + "Erreur : Veuillez entrer un chiffre entre 1 et 3." + Affichage.resetCouleur);
+                    sc.nextLine(); // Consommer la ligne incorrecte
+                    System.out.print("Votre choix : "); // Redemander l'entrée
+                }
+            }
     
             // Traiter le choix de l'utilisateur
             switch (choix) {
@@ -339,16 +388,18 @@ public class MagicMoolah implements Machine{
                     lancerMultiple(joueur);
                     break;
                 case 3:
-                    System.out.println(joueur.rouge + "Total des jetons misés : " + miseTotale); // Affichage des jetons perdus
-                    System.out.println(joueur.vert + "Total des jetons gagnés : " + gainTotal + joueur.resetCouleur); // Affichage des jetons gagnés
+                    System.out.println(Affichage.rouge + "Total des jetons misés : " + miseTotale); // Affichage des jetons perdus
+                    System.out.println(Affichage.vert + "Total des jetons gagnés : " + gainTotal + Affichage.resetCouleur); // Affichage des jetons gagnés
                     break;
                 default:
-                    System.out.println(joueur.rouge + "Choix invalide" + joueur.resetCouleur);
+                    // Ce cas ne sera jamais atteint grâce à la validation dans le while
+                    break;
             }
     
+            // On vide le scanner
+            sc.nextLine();
             // Demander si l'utilisateur souhaite continuer
-            continuer = demanderContinuer(sc);
+            continuer = demanderContinuer(sc, joueur);
         }
-    }
-       
+    }    
 }

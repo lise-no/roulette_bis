@@ -11,7 +11,7 @@ public class Main {
         Casino casino = new Casino();
         
         // Initialisation du joueur
-        joueur.initialisationJoueur(sc); 
+        joueur.initialisationJoueur(sc, joueur); 
         
         // Appel le menu
         casino.menu(joueur, sc);
