@@ -2,7 +2,7 @@ import java.util.ArrayList;  // pour les listes
 import java.util.Random;     // pour générer des nombres aléatoires
 import java.util.Scanner;    // pour lire les entrées clavier 
 
-public class Roulette implements Machine {
+public class Roulette{// implements Machine {
         private int experienceMin; // expérience minimum pour jouer
         private final ArrayList<Integer> rouges; // Liste des numéros rouges
         private final ArrayList<Integer> noirs;  // Liste des numéros noirs
@@ -19,8 +19,9 @@ public class Roulette implements Machine {
             this.resultats = new ArrayList<>(); // Initialisation de la liste des résultats
         }
     
-        @Override
-        public void lancer(Joueur joueur, Scanner scanner) {
+        //@Override
+        public void lancer(Joueur joueur) {
+            Scanner scanner = new Scanner(System.in);
             boolean rejouer = true;
             // Simuler la création d'un joueur (exemple basique, à adapter selon votre code)
     
@@ -249,7 +250,7 @@ public class Roulette implements Machine {
     }
 
     // Méthode pour afficher les résultats finaux
-    @Override
+    // @Override Mise en commentaire du override pour pouvoir lancer le main
     public void afficherResultat(Joueur joueur) {
         System.out.println("\nRésultats des parties :");
         for (int i = 0; i < resultats.size(); i++) {
