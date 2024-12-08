@@ -1,72 +1,78 @@
 import java.util.ArrayList;  // pour les listes
 import java.util.Random;     // pour générer des nombres aléatoires
-import java.util.Scanner;    // pour lire les entrées clavier
+import java.util.Scanner;    // pour lire les entrées clavier 
 
-public class MachineRoulette implements Machine {
-    private final int niveauExperienceMin; // Niveau minimum pour jouer
-    private final ArrayList<Integer> rouges; // Liste des numéros rouges
-    private final ArrayList<Integer> noirs;  // Liste des numéros noirs
-    private int totalMise; // Total des mises pour chaque session de jeu
-    private int nombreParties; // Nombre de parties jouées
-    private ArrayList<String> resultats; // Liste pour stocker les résultats de chaque partie
-
-    public MachineRoulette(int niveauExperienceMin) {
-        this.niveauExperienceMin = niveauExperienceMin;
-        this.rouges = initialiserRouges();
-        this.noirs = initialiserNoirs();
-        this.totalMise = 0;
-        this.nombreParties = 0;
-        this.resultats = new ArrayList<>(); // Initialisation de la liste des résultats
-    }
-
-    @Override
-    public void lancer() {
-        Scanner scanner = new Scanner(System.in);
-        boolean rejouer = true;
-        // Simuler la création d'un joueur (exemple basique, à adapter selon votre code)
-        Joueur joueur = new Joueur("Joueur1", 100, 50); // Exemple de joueur avec 100 jetons et 50 d'expérience
-
-    System.out.println("Bienvenue dans la Machine Roulette !" + joueur.getNom() + "." + "   " +"Cette machine evalue les chances de victoire des joueurs.");
+public class Roulette implements Machine {
+        private int experienceMin; // expérience minimum pour jouer
+        private final ArrayList<Integer> rouges; // Liste des numéros rouges
+        private final ArrayList<Integer> noirs;  // Liste des numéros noirs
+        private int totalMise; // Total des mises pour chaque session de jeu
+        private int nombreParties; // Nombre de parties jouées
+        private ArrayList<String> resultats; // Liste pour stocker les résultats de chaque partie
+    
+        public Roulette(int experienceMin) {
+            this.experienceMin = experienceMin;
+            this.rouges = initialiserRouges();
+            this.noirs = initialiserNoirs();
+            this.totalMise = 0;
+            this.nombreParties = 0;
+            this.resultats = new ArrayList<>(); // Initialisation de la liste des résultats
+        }
+    
+        @Override
+        public void lancer(Joueur joueur, Scanner scanner) {
+            boolean rejouer = true;
+            // Simuler la création d'un joueur (exemple basique, à adapter selon votre code)
+    
+        System.out.println("Bienvenue dans la Machine Roulette !" + joueur.getNom());
+        System.out.println("Cette machine évalue les chances de victoire des joueurs.");
+            
+     // Boucle de jeu
+        while (rejouer && nombreParties < 5) {
+             // Vérifier si le joueur peut jouer? s'il a l'expérience nécéssaire pour jouer
+             if (!Exp(joueur)) {
+                System.out.println("Votre niveau d'expérience est insuffisant pour jouer à cette machine.");
+            break;
+           }
+            try {
+                effectuerPari(scanner,joueur);
+            } catch (Roulette.MiseInvalideException e) {
+                System.out.println("Erreur de mise : " + e.getMessage());
+            } catch (Roulette.ChoixInvalideException e) {
+                System.out.println("Erreur de choix : " + e.getMessage());
+            } catch (Roulette.NumeroInvalideException e) {
+                System.out.println("Numéro invalide : " + e.getMessage());
+            } catch (Roulette.CouleurInvalideException e) {
+                System.out.println("Couleur invalide : " + e.getMessage());
+            }
+           // Vérifier si le joueur a encore des jetons pour continuer
+            if (joueur.getSolde() <= 0) {
+               System.out.println("Vous n'avez plus de jetons pour continuer. Fin de la partie.");
+             break;
+            }
+            // Demander à l'utilisateur s'il veut rejouer
+            System.out.println("Souhaitez-vous rejouer ? (oui/non) : ");
+            String reponse = scanner.next().toLowerCase();
+            if (!reponse.equals("oui")) {
+                rejouer = false;
+            break;
+             }
+        }
+        //l'experience du joueur augmente de 5 après chaque séries de 5 session
+        if (joueur.getBarreExp() % 5 == 0) { 
+            experienceMin += 5;
+            System.out.println("La difficulté a augmenté ! L'expérience minimale requise est maintenant de " + experienceMin + ".");
+        }
         
- // Boucle de jeu
-    while (rejouer && nombreParties < 10) {
-    // Vérifier si le joueur peut jouer? s'il a l'expérience nécéssaire pour jouer
-         if (!Exp(joueur)) {
-             System.out.println("Votre niveau d'expérience est insuffisant pour jouer à cette machine.");
-         break;
-        }
-        try {
-            effectuerPari(joueur);
-        } catch (MachineRoulette.MiseInvalideException e) {
-            System.out.println("Erreur de mise : " + e.getMessage());
-        } catch (MachineRoulette.ChoixInvalideException e) {
-            System.out.println("Erreur de choix : " + e.getMessage());
-        } catch (MachineRoulette.NumeroInvalideException e) {
-            System.out.println("Numéro invalide : " + e.getMessage());
-        } catch (MachineRoulette.CouleurInvalideException e) {
-            System.out.println("Couleur invalide : " + e.getMessage());
-        }
-       // Vérifier si le joueur a encore des jetons pour continuer
-        if (joueur.getJetons() <= 0) {
-           System.out.println("Vous n'avez plus de jetons pour continuer. Fin de la partie.");
-         break;
-        }
-// Demander à l'utilisateur s'il veut rejouer
-     System.out.print("Souhaitez-vous rejouer ? (oui/non) : ");
- String reponse = scanner.next().toLowerCase();
- if (!reponse.equals("oui")) {
-    rejouer = false;
- break;
-}
+        //le niveau du joueur augmente aprés chaque session
+        joueur.ajouterNiveau();
+        // Afficher les résultats finaux de la session de jeu
+        afficherResultat(joueur);
     }
-// Afficher les résultats finaux de la session de jeu
-    afficherResultat(joueur);
-         }
-
 
     // Vérifie si le joueur a l'expérience nécessaire pour jouer
     boolean Exp(Joueur joueur) {
-        return joueur.getExperience() >= niveauExperienceMin;
+        return joueur.getBarreExp() >= experienceMin;
     }
 
     // Classe interne pour les exceptions liées à une mise invalide
@@ -96,21 +102,20 @@ public class MachineRoulette implements Machine {
         }
     }
 
-    private void effectuerPari(Joueur joueur) throws MiseInvalideException, ChoixInvalideException, NumeroInvalideException, CouleurInvalideException {
-        Scanner scanner = new Scanner(System.in);
-
+    
+    private void effectuerPari(Scanner scanner, Joueur joueur) throws MiseInvalideException, ChoixInvalideException, NumeroInvalideException, CouleurInvalideException {
         // Demander au joueur sa mise
         int mise = -1;
-    System.out.print("Combien de jetons souhaitez-vous parier ? (vous avez " + joueur.getJetons() + " jetons) : ");
+    System.out.println("Combien de jetons souhaitez-vous parier ? (vous avez " + joueur.getSolde() + " jetons) : ");
      if (!scanner.hasNextInt()) {//si l'entrée est  un entier
         throw new MiseInvalideException("Entrée invalide. Vous devez entrer un nombre entier.");
      }
      mise = scanner.nextInt();
 
-    if (mise < 1 || mise > joueur.getJetons()) {
-                throw new MiseInvalideException("Mise invalide. Vous devez parier entre 1 et " + joueur.getJetons() + " jetons.");
+    if (mise < 1 || mise > joueur.getSolde()) {
+                throw new MiseInvalideException("Mise invalide. Vous devez parier entre 1 et " + joueur.getSolde() + " jetons.");
             }
-   // Ajouter la mise au total
+        // Ajouter la mise au total
         totalMise += mise;
         nombreParties++;
 
@@ -135,18 +140,19 @@ public class MachineRoulette implements Machine {
 
         // Traiter le choix
         if (choix == 1) {
-            parierNumero(joueur, mise);
+            parierNumero(joueur, mise, scanner);
         } else if (choix == 2) {
-            parierCouleur(joueur, mise);
+            parierCouleur(joueur, mise, scanner);
         } else if (choix == 3) {
             parierZero(joueur, mise);
         } else if (choix == 4) {
-            parierNumeroEtCouleur(joueur, mise);
+            parierNumeroEtCouleur(joueur, mise,scanner);
         }
+        
     }
 
-    private void parierNumero(Joueur joueur, int mise) throws NumeroInvalideException {
-        Scanner scanner = new Scanner(System.in);
+   
+    private void parierNumero(Joueur joueur, int mise, Scanner scanner ) throws NumeroInvalideException {
         System.out.print("Choisissez un numéro (1 à 36) : ");
         if (!scanner.hasNextInt()) {
             throw new NumeroInvalideException("Entrée invalide. Veuillez entrer un numéro entre 1 et 36.");
@@ -161,17 +167,18 @@ public class MachineRoulette implements Machine {
 
         if (numeroPari == resultat) {
             System.out.println("Félicitations, vous avez gagné !");
-            joueur.ajouterJetons(mise * 35); // Gain : 35 fois la mise
-            resultats.add("Gagné : Numéro " + numeroPari);
+            joueur.modifSolde(mise * 35); // Gain : 35 fois la mise
+            joueur.gagnerExperience(5);
+            resultats.add("Gagné : Numéro parié " + numeroPari);
         } else {
             System.out.println("Dommage, vous avez perdu.");
-            joueur.retirerJetons(mise); // Perte : mise retirée
-            resultats.add("Perdu : NuméroParier" + numeroPari);
+            joueur.modifSolde(-mise); // Perte : mise retirée
+            resultats.add("Perdu : Numéro Parié" + numeroPari);
         }
+        
     }
 
-    private void parierCouleur(Joueur joueur, int mise) throws CouleurInvalideException {
-        Scanner scanner = new Scanner(System.in);
+    private void parierCouleur(Joueur joueur, int mise, Scanner scanner) throws CouleurInvalideException {
         System.out.print("Choisissez une couleur (rouge ou noir) : ");
         String couleurPariee = scanner.next().toLowerCase();
         if (!couleurPariee.equals("rouge") && !couleurPariee.equals("noir")) {
@@ -179,18 +186,20 @@ public class MachineRoulette implements Machine {
         }
         System.out.println("Vous avez parié sur la couleur " + couleurPariee + ".");
         int resultat = new Random().nextInt(37);
-        String couleurResultat = resultat == 0 ? "vert" : (rouges.contains(resultat) ? "rouge" : "noir");
+        String couleurResultat = resultat == 0 ? "vert" : (rouges.contains(resultat) ? "rouge" : noirs.contains(resultat)? "noir": "vert");
         System.out.println("La roulette a tourné... le numéro est : " + resultat + " (" + couleurResultat + ").");
 
         if (couleurPariee.equals(couleurResultat)) {
             System.out.println("Félicitations, vous avez gagné !");
-            joueur.ajouterJetons(mise * 2); // Gain : 2 fois la mise
-            resultats.add("Gagné : CouleurParier " + couleurPariee);
+            joueur.modifSolde(mise * 35); // Gain : 2 fois la mise
+            joueur.gagnerExperience(5);
+            resultats.add("Gagné : Couleur Parié " + couleurPariee);
         } else {
             System.out.println("Dommage, vous avez perdu.");
-            joueur.retirerJetons(mise); // Perte : mise retirée
-            resultats.add("Perdu : CouleurParier " + couleurPariee);
+            joueur.modifSolde(-mise); // Perte : mise retirée
+            resultats.add("Perdu : Couleur Parié " + couleurPariee);
         }
+       
     }
 
     private void parierZero(Joueur joueur, int mise) {
@@ -198,23 +207,24 @@ public class MachineRoulette implements Machine {
         System.out.println("La roulette a tourné... le numéro est : " + resultat);
         if (resultat == 0) {
             System.out.println("Félicitations, vous avez gagné !");
-            joueur.ajouterJetons(mise * 17); // Gain : 17 fois la mise
+            joueur.modifSolde(mise * 40); // Gain : 17 fois la mise
+            joueur.gagnerExperience(6);
             resultats.add("Gagné : Numéro 0");
         } else {
             System.out.println("Dommage, vous avez perdu.");
-            joueur.retirerJetons(mise); // Perte : mise retirée
-            resultats.add("Perdu : NuméroParier 0");
+            joueur.modifSolde(-mise); // Perte : mise retirée
+            resultats.add("Perdu : Numéro Parié 0");
         }
     }
 
-    private void parierNumeroEtCouleur(Joueur joueur, int mise)throws NumeroInvalideException,CouleurInvalideException {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Choisissez un numéro (1 à 36) : ");
+    
+    private void parierNumeroEtCouleur(Joueur joueur, int mise, Scanner scanner)throws NumeroInvalideException,CouleurInvalideException {
+        System.out.println("Choisissez un numéro (1 à 36) : ");
         int numeroPari = scanner.nextInt();
         if (numeroPari < 1 || numeroPari > 36) {
             throw new NumeroInvalideException("Numéro invalide. Veuillez entrer un numéro entre 1 et 36.");
         }
-        System.out.print("Choisissez une couleur (rouge ou noir) : ");
+        System.out.println("Choisissez une couleur (rouge ou noir) : ");
         String couleurPariee = scanner.next().toLowerCase();
         if(!couleurPariee.equals("rouge") && !couleurPariee.equals("noir")) {
               throw new CouleurInvalideException("Couleur invalide. Veuillez entrer 'rouge' ou 'noir'.");
@@ -227,28 +237,32 @@ public class MachineRoulette implements Machine {
 
         if (numeroPari == resultat && couleurPariee.equals(couleurResultat)) {
             System.out.println("Félicitations, vous avez gagné !");
-            joueur.ajouterJetons(mise * 50); // Gain : 50 fois la mise
-            resultats.add("Gagné : NuméroParier; " + numeroPari + " et CouleurParier " + couleurPariee);
+            joueur.modifSolde(mise * 50); // Gain : 50 fois la mise
+            joueur.gagnerExperience(10);
+            resultats.add("Gagné : Numéro Parié; " + numeroPari + " et Couleur Parié " + couleurPariee);
         } else {
             System.out.println("Dommage, vous avez perdu.");
-            joueur.retirerJetons(mise); // Perte : mise retirée
-            resultats.add("Perdu : NuméroParier; " + numeroPari + " et CouleurParier " + couleurPariee);
+            joueur.modifSolde(-mise); // Perte : mise retirée
+            resultats.add("Perdu : Numéro Parié; " + numeroPari + " et Couleur Parié " + couleurPariee);
         }
+        
     }
 
     // Méthode pour afficher les résultats finaux
-    private void afficherResultat(Joueur joueur) {
+    @Override
+    public void afficherResultat(Joueur joueur) {
         System.out.println("\nRésultats des parties :");
         for (int i = 0; i < resultats.size(); i++) {
-            System.out.println("Partie " + (i + 1) + ": " + resultats.get(i));
+            System.out.println("Partie " + (i+1) + ": " + resultats.get(i));
         }
 
         System.out.println("\nRésumé de la session de jeu :");
         System.out.println("Total des mises : " + totalMise);
         System.out.println("Nombre de parties jouées : " + nombreParties);
-        System.out.println("Jetons restants : " + joueur.getJetons());
+        System.out.println("Jetons restants : " + joueur.getSolde());
+        System.out.println("Expérience actuelle : " + joueur.getBarreExp()); // Afficher l'expérience du joueur
     }
-
+   
     // Initialiser les numéros rouges
     private ArrayList<Integer> initialiserRouges() {
         ArrayList<Integer> rouges = new ArrayList<>();
