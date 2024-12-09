@@ -11,7 +11,7 @@ public class Roulette implements Machine {
         private ArrayList<String> resultats; // Liste pour stocker les résultats de chaque partie
     
         public Roulette(int experienceMin) {
-            this.experienceMin = experienceMin;
+            this.experienceMin = 10;
             this.rouges = initialiserRouges();
             this.noirs = initialiserNoirs();
             this.totalMise = 0;
@@ -26,9 +26,10 @@ public class Roulette implements Machine {
     
         System.out.println("Bienvenue dans la Machine Roulette !" + joueur.getNom());
         System.out.println("Cette machine évalue les chances de victoire des joueurs.");
+        System.out.println("vous pouvez jouer au max 10 parties");
             
      // Boucle de jeu
-        while (rejouer && nombreParties < 5) {
+        while (rejouer && nombreParties < 10) {
              // Vérifier si le joueur peut jouer? s'il a l'expérience nécéssaire pour jouer
              if (!Exp(joueur)) {
                 System.out.println("Votre niveau d'expérience est insuffisant pour jouer à cette machine.");
@@ -58,7 +59,7 @@ public class Roulette implements Machine {
             break;
              }
         }
-        //l'experience du joueur augmente de 5 après chaque séries de 5 session
+        //l'experience minimum nécéssaire pour jouer augmente de 5 après chaque séries de 5 session
         if (joueur.getBarreExp() % 5 == 0) { 
             experienceMin += 5;
             System.out.println("La difficulté a augmenté ! L'expérience minimale requise est maintenant de " + experienceMin + ".");
@@ -66,8 +67,10 @@ public class Roulette implements Machine {
         
         //le niveau du joueur augmente aprés chaque session
         joueur.ajouterNiveau();
+        // Vérifier les résultats et augmenter l'expérience si nécessaire
+        verifierResultat(joueur);
         // Afficher les résultats finaux de la session de jeu
-        afficherResultat(joueur);
+        afficherResultat();
     }
 
     // Vérifie si le joueur a l'expérience nécessaire pour jouer
@@ -168,7 +171,6 @@ public class Roulette implements Machine {
         if (numeroPari == resultat) {
             System.out.println("Félicitations, vous avez gagné !");
             joueur.modifSolde(mise * 35); // Gain : 35 fois la mise
-            joueur.gagnerExperience(5);
             resultats.add("Gagné : Numéro parié " + numeroPari);
         } else {
             System.out.println("Dommage, vous avez perdu.");
@@ -192,7 +194,6 @@ public class Roulette implements Machine {
         if (couleurPariee.equals(couleurResultat)) {
             System.out.println("Félicitations, vous avez gagné !");
             joueur.modifSolde(mise * 35); // Gain : 2 fois la mise
-            joueur.gagnerExperience(5);
             resultats.add("Gagné : Couleur Parié " + couleurPariee);
         } else {
             System.out.println("Dommage, vous avez perdu.");
@@ -208,7 +209,6 @@ public class Roulette implements Machine {
         if (resultat == 0) {
             System.out.println("Félicitations, vous avez gagné !");
             joueur.modifSolde(mise * 40); // Gain : 17 fois la mise
-            joueur.gagnerExperience(6);
             resultats.add("Gagné : Numéro 0");
         } else {
             System.out.println("Dommage, vous avez perdu.");
@@ -238,7 +238,6 @@ public class Roulette implements Machine {
         if (numeroPari == resultat && couleurPariee.equals(couleurResultat)) {
             System.out.println("Félicitations, vous avez gagné !");
             joueur.modifSolde(mise * 50); // Gain : 50 fois la mise
-            joueur.gagnerExperience(10);
             resultats.add("Gagné : Numéro Parié; " + numeroPari + " et Couleur Parié " + couleurPariee);
         } else {
             System.out.println("Dommage, vous avez perdu.");
@@ -250,7 +249,7 @@ public class Roulette implements Machine {
 
     // Méthode pour afficher les résultats finaux
     @Override
-    public void afficherResultat(Joueur joueur) {
+    public void afficherResultat() {
         System.out.println("\nRésultats des parties :");
         for (int i = 0; i < resultats.size(); i++) {
             System.out.println("Partie " + (i+1) + ": " + resultats.get(i));
@@ -259,10 +258,23 @@ public class Roulette implements Machine {
         System.out.println("\nRésumé de la session de jeu :");
         System.out.println("Total des mises : " + totalMise);
         System.out.println("Nombre de parties jouées : " + nombreParties);
-        System.out.println("Jetons restants : " + joueur.getSolde());
-        System.out.println("Expérience actuelle : " + joueur.getBarreExp()); // Afficher l'expérience du joueur
+        
     }
-   
+
+    @Override
+    public void verifierResultat(Joueur joueur) {
+    boolean aGagne = false;
+    for (String resultat : resultats) {
+        if (resultat.contains("Gagné")) {
+            aGagne = true;
+            break; // Pas besoin de continuer une fois qu'on sait qu'il a gagné
+        }
+    }
+    if (aGagne) {
+        joueur.gagnerExperience(10); // Augmenter l'expérience de 10 points
+    }
+    }
+
     // Initialiser les numéros rouges
     private ArrayList<Integer> initialiserRouges() {
         ArrayList<Integer> rouges = new ArrayList<>();
@@ -282,4 +294,7 @@ public class Roulette implements Machine {
         }
         return noirs;
     }
+
+   
+
 }
