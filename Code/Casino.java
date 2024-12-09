@@ -5,8 +5,8 @@ import java.util.InputMismatchException; // pour pouvoir utliser l'exception
 public class Casino {
      // Créer les objets machine
     MagicMoolah machine1 = new MagicMoolah();
-    //Allin machine2
-    //Roulette machine3// Liste des machines disponibles
+    AllIn machine2 = new AllIn();
+    Roulette machine3 = new Roulette(5);
 
     boolean continuer = true;  // Contrôle du menu
 
@@ -19,9 +19,13 @@ public class Casino {
             System.out.println("--+" + Affichage.violet + '-' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
             System.out.println(Affichage.bleu + "=================Menu du Casino Magnifico=================" + Affichage.resetCouleur);
             System.out.println("\nQue voulez-vous faire ?");
-            System.out.println(Affichage.violet + "1. Jouer à Magic Moolah" + Affichage.resetCouleur); // à remplacer par un menu de selection de machine
-            System.out.println(Affichage.vert + "2. Afficher vos informations" + Affichage.resetCouleur);
-            System.out.println(Affichage.rouge + "3. Quitter" +Affichage.resetCouleur);
+            System.out.println("Jouer à une machine :");
+            System.out.println(Affichage.violet + "     1. Magic Moolah" + Affichage.resetCouleur);
+            System.out.println(Affichage.jaune + "      2. AllIn" + Affichage.resetCouleur);
+            System.out.println(Affichage.cyan + "       3. Roulette" + Affichage.resetCouleur);
+            System.out.println("Autre action :");
+            System.out.println(Affichage.vert + "       4. Afficher vos informations" + Affichage.resetCouleur);
+            System.out.println(Affichage.rouge + "      5. Quitter" +Affichage.resetCouleur);
             
             int choix = 0; // Initialiser la variable de choix
     
@@ -43,20 +47,18 @@ public class Casino {
                 case 1:
                     machine1.jouer(joueur, sc);  // Lancer une partie de MagicMoolah
                     break;
-                /*
                 // Machine AllIn
                 case 2:
                     machine2.jouer(joueur, sc);
                     break;
                 // Machine Roulette
                 case 3:
-                    machine3.jouer(joueur, sc);
+                    machine3.lancer(joueur);
                     break; 
-                */
-                case 2:
+                case 4:
                     joueur.afficherInfo(sc, joueur);  // Afficher les informations du joueur
                     break;
-                case 3:
+                case 5:
                     continuer = false;  // Quitter le jeu
                     System.out.println("\nMerci d'avoir joué !");
                     break;
