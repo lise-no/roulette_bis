@@ -13,7 +13,8 @@ public class AllIn implements Machine {
     private int gainsNegatifs; // total des pertes
     private int miseTotale; // mise totale pariée
     private String description;
-    private int volatilite;
+    public int nivJoueurMin;
+    public boolean jouableAllIn; // teste si la machine est jouable, en publique pour que casino puisse y avoir accès
 
     // constructeur de la classe AllIn
     public AllIn() {
@@ -25,7 +26,16 @@ public class AllIn implements Machine {
         this.gainsNegatifs = 0;
         this.miseTotale = 0;
         this.description = "Règles de la machine All In : pour le niveau de difficulté 1, la mise minimale est de 100 jetons, pour le niveau de difficulté 2, la mise minimale est de 150, pour le niveau de difficulté 3, la mise minimale est de 250.";
-        this.volatilite = 0;
+        this.nivJoueurMin = 8;
+        this.jouableAllIn = true;
+    }
+
+    public void verifNivJoueurMin(Joueur joueur) {
+        // teste si le niveau du joueur est assez haut pour pouvoir utiliser la machine
+        if (joueur.getNiveau() < this.nivJoueurMin) {
+            System.out.println(Affichage.rouge + "Votre niveau est trop bas pour jouer au All In !");
+            this.jouableAllIn = false;
+        }
     }
 
     public void lancer(Joueur joueur) {
