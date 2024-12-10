@@ -53,7 +53,7 @@ public class Casino {
                     break;
                 // Machine Roulette
                 case 3:
-                    machine3.lancer(joueur);
+                    machine3.Jouer(joueur, sc);
                     break; 
                 case 4:
                     joueur.afficherInfo(sc, joueur);  // Afficher les informations du joueur
