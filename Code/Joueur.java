@@ -70,6 +70,17 @@ public class Joueur {
             System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
         }
     }
+    
+    // Médothe pour modifier le solde
+    /*public void modifSolde(int montant) {
+        // Montant est en entrée négatif quand il est retiré au solde
+        if (solde + montant >= 0) {
+            this.solde += montant;  // On ajoute le montant au solde
+        } else {
+            System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
+        }
+    }*/
+
     /*// Méthode pour modifier le solde
     public void modifSolde(int montant) {
         if (montant < 0 && solde + montant < 0) { // Vérification pour les pertes
