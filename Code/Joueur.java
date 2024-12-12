@@ -90,6 +90,14 @@ public class Joueur {
         }
     }
 
+    /*public void modifSolde(int montant) {
+        if (solde + montant >= 0) {
+            this.solde += montant;  // On ajoute le montant au solde
+        } else {
+            System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
+        }
+    }*/
+
     /**
      * Permet au joueur de gagner de l'expérience.
      * Si l'expérience du joueur dépasse le seuil nécessaire pour passer au niveau supérieur, il passe au niveau suivant.

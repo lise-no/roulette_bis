@@ -15,7 +15,6 @@ public class AllIn implements Machine {
     private int difficulte; // La difficulté choisie par le joueur
     private int mise;
     private int gain;
-    private String description;
     public int nivJoueurMin;
 
 
@@ -28,9 +27,17 @@ public class AllIn implements Machine {
         this.difficulte = 0;
         this.mise = 0;
         this.gain = 0;
-        this.description = Affichage.jaune + "\n- Règles de la machine All In -\n\n" + Affichage.vert + "Pour le niveau de difficulté 1, la mise minimale est de 5000 jetons !\n" + Affichage.bleu + "Pour le niveau de difficulté 2, la mise minimale est de 10000 jetons !\n" + Affichage.violet + "Pour le niveau de difficulté 3, la mise minimale est de 25000 jetons !\n" + Affichage.resetCouleur + "---------------------------------------------------------------------------";
         this.nivJoueurMin = 8;
     }
+
+    /**
+     * Affiche les règles de la machine All In.
+     * 
+     * @param joueur Le joueur qui veut jouer.
+     */
+    public void affichageDescription(Joueur joueur){
+        System.out.println(Affichage.jaune + "\n- Règles de la machine All In -\n\n" + Affichage.vert + "Pour le niveau de difficulté 1, la mise minimale est de " + joueur.getSolde() * 25 / 100 + " jetons !\n" + Affichage.bleu + "Pour le niveau de difficulté 2, la mise minimale est de " +joueur.getSolde() * 50 / 100 + " jetons !\n" + Affichage.violet + "Pour le niveau de difficulté 3, la mise minimale est de " + joueur.getSolde() + " jetons !\n" + Affichage.resetCouleur + "---------------------------------------------------------------------------");
+    } 
 
     /**
      * Vérifie si le joueur a un niveau suffisant pour jouer à la machine.
@@ -89,9 +96,7 @@ public class AllIn implements Machine {
         boolean rejouer = true;
 
         System.out.print("\033[H\033[2J"); // Clear le terminal
-        System.out.println("niv joueur : " + joueur.getNiveau());
-        System.out.println("niv min pour jouer : " + this.nivJoueurMin);
-        System.out.println(this.description);
+        affichageDescription(joueur);
         if (!verifNivJoueurMin(joueur)){
             rejouer = false ;
         }
@@ -100,7 +105,7 @@ public class AllIn implements Machine {
             // choix de la mise, vérification de la mise et choix de la difficulté
             nivDifficulte(sc);
             miser(joueur, sc);
-            rejouer = verifEntreeMise(joueur, sc);
+            verifEntreeMise(joueur, sc, rejouer);
 
             // permet au joueur d'arrêter de jouer avant d'avoir créé un tableau
             if (rejouer) {
@@ -320,18 +325,17 @@ public class AllIn implements Machine {
      * 
      * @param joueur Le joueur qui joue.
      * @param sc Scanner pour l'entrée du joueur.
-     * @return true si le joueur souhaite rejouer, false sinon.
      */
-    public boolean verifEntreeMise(Joueur joueur, Scanner sc) {
+    public void verifEntreeMise(Joueur joueur, Scanner sc, boolean rejouer) {
         // permet au joueur de choisir entre changer sa mise, changer de difficulté ou
         // arrêter de jouer quand la mise n'est pas suffisante pour la difficulté
         int exit = 0;
-        int[] misePourChaqueDifficulte = { 5000, 10000, 25000 };
-        boolean valide = false, rejouer = true;
+        int[] misePourChaqueDifficulte = { (joueur.getSolde() + this.mise) * 25 / 100, (joueur.getSolde() + this.mise) * 50 / 100, (joueur.getSolde() + this.mise)  };
+        boolean valide = false;
 
         // si la mise est trop petite pour la difficulté choisie
-        joueur.modifSolde(this.mise);
         if (this.mise < misePourChaqueDifficulte[this.difficulte - 1]) {
+            joueur.modifSolde(this.mise);
             System.out.println(Affichage.rouge + "! Attention !" + Affichage.resetCouleur + " La mise minimale pour la difficulté " + this.difficulte + " est de " + misePourChaqueDifficulte[this.difficulte - 1] + " jetons. Voulez-vous : " + Affichage.jaune +" \n   1. Changer votre mise " + Affichage.vert + "\n   2. Changer de difficulté " + Affichage.violet +"\n   3. Arrêter de jouer" + Affichage.resetCouleur);
             // permet au catch/try de se déclencher autant de fois que besoin
             while (!valide) {
@@ -339,7 +343,7 @@ public class AllIn implements Machine {
                     exit = sc.nextInt();
                     // si l'entrée n'est pas entre 1 et 3
                     if (exit != 1 && exit != 2 && exit != 3) {
-                        System.out.println("Veuillez choisir un nombre entre 1 et 3 !");
+                        System.out.println(Affichage.rouge + "Veuillez choisir un nombre entre 1 et 3 !" + Affichage.resetCouleur);
                         exit = sc.nextInt();
                     }
                     valide = true;
@@ -352,21 +356,22 @@ public class AllIn implements Machine {
         }
         // si le joueur veut changer sa mise
         if (exit == 1) {
-            // modifMise(joueur, sc);
+            this.mise = 0;
             miser(joueur, sc);
-            verifEntreeMise(joueur, sc);
+            verifEntreeMise(joueur, sc, rejouer);
         }
         // si le joueur veut changer sa difficulté
         if (exit == 2) {
+            this.mise = 0;
             nivDifficulte(sc);
             miser(joueur, sc);
-            verifEntreeMise(joueur, sc);
+            verifEntreeMise(joueur, sc, rejouer);
         }
         // si le joueur veut arrêter de jouer
         if (exit == 3) {
+            this.mise = 0;
             rejouer = demandeRejouer(joueur, sc);
         }
-        return rejouer;
     }
 
 }
