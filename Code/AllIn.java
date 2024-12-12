@@ -11,7 +11,7 @@ public class AllIn implements Machine {
     private int gain;
     private String description;
     public int nivJoueurMin;
-    public boolean jouableAllIn; // teste si la machine est jouable, en publique pour que casino puisse y avoir accès
+    //public boolean jouableAllIn; // teste si la machine est jouable, en publique pour que casino puisse y avoir accès
 
 
     // constructeur de la classe AllIn
@@ -20,18 +20,25 @@ public class AllIn implements Machine {
         this.difficulte = 0;
         this.mise = 0;
         this.gain = 0;
-        this.description = Affichage.jaune + "\n- Règles de la machine All In -\n\n" + Affichage.vert + "Pour le niveau de difficulté 1, la mise minimale est de 100 jetons !\n" + Affichage.bleu + "Pour le niveau de difficulté 2, la mise minimale est de 150 jetons !\n" + Affichage.violet + "Pour le niveau de difficulté 3, la mise minimale est de 250 jetons !\n" + Affichage.resetCouleur + "---------------------------------------------------------------------------";
+        this.description = Affichage.jaune + "\n- Règles de la machine All In -\n\n" + Affichage.vert + "Pour le niveau de difficulté 1, la mise minimale est de 5000 jetons !\n" + Affichage.bleu + "Pour le niveau de difficulté 2, la mise minimale est de 10000 jetons !\n" + Affichage.violet + "Pour le niveau de difficulté 3, la mise minimale est de 25000 jetons !\n" + Affichage.resetCouleur + "---------------------------------------------------------------------------";
         this.nivJoueurMin = 8;
-        this.jouableAllIn = true;
     }
 
 
-    public void verifNivJoueurMin(Joueur joueur) {
+    public boolean verifNivJoueurMin(Joueur joueur) {
+        boolean peutJouer = true;
         // teste si le niveau du joueur est assez haut pour pouvoir utiliser la machine
         if (joueur.getNiveau() < this.nivJoueurMin) {
-            System.out.println(Affichage.rouge + "Votre niveau est trop bas pour jouer au All In !");
-            this.jouableAllIn = false;
+            System.out.println(Affichage.rouge + "Votre niveau est trop bas pour jouer au All In !" + Affichage.resetCouleur);
+            try {
+                    Thread.sleep(2000); // pour afficher le message avant de revenir sur le menu de Casino
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                // break;
+            return !peutJouer;
         }
+        return peutJouer;
     }
 
 
@@ -54,8 +61,13 @@ public class AllIn implements Machine {
         // permet de commencer à jouer
         boolean rejouer = true;
 
+        System.out.print("\033[H\033[2J"); // Clear le terminal
+        System.out.println("niv joueur : " + joueur.getNiveau());
+        System.out.println("niv min pour jour : " + this.nivJoueurMin);
         System.out.println(this.description);
-
+        if (!verifNivJoueurMin(joueur)){
+            rejouer = false ;
+        }
         // permet de rejouer immédiatement
         while (rejouer) {
             // choix de la mise, vérification de la mise et choix de la difficulté
@@ -255,6 +267,7 @@ public class AllIn implements Machine {
         boolean valide = false, rejouer = true;
 
         // si la mise est trop petite pour la difficulté choisie
+        joueur.modifSolde(this.mise);
         if (this.mise < misePourChaqueDifficulte[this.difficulte - 1]) {
             System.out.println(Affichage.rouge + "! Attention !" + Affichage.resetCouleur + " La mise minimale pour la difficulté " + this.difficulte + " est de " + misePourChaqueDifficulte[this.difficulte - 1] + " jetons. Voulez-vous : " + Affichage.jaune +" \n   1. Changer votre mise " + Affichage.vert + "\n   2. Changer de difficulté " + Affichage.violet +"\n   3. Arrêter de jouer" + Affichage.resetCouleur);
             // permet au catch/try de se déclencher autant de fois que besoin
