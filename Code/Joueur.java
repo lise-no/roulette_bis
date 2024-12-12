@@ -83,20 +83,13 @@ public class Joueur {
      * @param montant Le montant à ajouter ou retirer au solde du joueur.
      */
     public void modifSolde(int montant) {
-        if (solde - montant >= 0) {
-            this.solde += montant;  // On ajoute le montant au solde
+        if (montant < 0 && solde + montant < 0) { // Vérification pour les pertes
+            System.out.println("Solde insuffisant. Impossible de miser ou de retirer " + Math.abs(montant) + " jetons.");
         } else {
-            System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
+            this.solde += montant;
         }
     }
 
-    /*public void modifSolde(int montant) {
-        if (solde + montant >= 0) {
-            this.solde += montant;  // On ajoute le montant au solde
-        } else {
-            System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
-        }
-    }*/
 
     /**
      * Permet au joueur de gagner de l'expérience.

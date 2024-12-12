@@ -213,7 +213,13 @@ public class AllIn implements Machine {
         }
 
         // modifie dans joueur le nombre de jetons qu'il obtient après avoir joué
-        joueur.modifSolde(this.mise);
+        //joueur.modifSolde(this.mise);
+        if(gain >= 0){
+            joueur.modifSolde(mise);
+        }
+        else{
+            joueur.modifSolde(-mise);
+        }
         this.mise = 0;
         this.gain = 0;
     }
