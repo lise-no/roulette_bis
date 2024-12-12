@@ -52,15 +52,22 @@ public class Roulette implements Machine {
     }
 
 
-    public void Jouer(Joueur joueur, Scanner scanner){
+    public void jouer(Joueur joueur, Scanner scanner){
         lancer(joueur);
         boolean rejouer = true;
         // Boucle de jeu
         while (rejouer && nombreParties < 10) {
         // Vérifier si le joueur peut jouer? s'il a le niveau nécéssaire pour jouer
              if (!peutJouer(joueur)) {
-                System.out.println("Votre niveau est insuffisant pour jouer à cette machine.");
-            break;
+                System.out.print("\033[H\033[2J"); // Clear le terminal
+                System.out.println(Affichage.rouge + "Votre niveau est insuffisant pour jouer à cette machine." + Affichage.resetCouleur);
+                // Pause pour que le message soit visible
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                break;
            }
             try {
                 effectuerPari(scanner,joueur);
@@ -85,7 +92,7 @@ public class Roulette implements Machine {
         //le niveau minimum nécéssaire pour jouer augmente de 5 après chaque séries de 5 session
         if (joueur.getBarreExp() % 5 == 0) { 
             niveauMin += 5;
-            System.out.println("La difficulté a augmenté ! Le niveau minimale requise est maintenant de " + niveauMin + ".");
+            System.out.println("La difficulté a augmenté ! Le niveau minimal requise est maintenant de " + niveauMin + ".");
         }
         
         //le niveau du joueur augmente aprés chaque session

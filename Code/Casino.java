@@ -21,8 +21,8 @@ public class Casino {
             System.out.println("\nQue voulez-vous faire ?");
             System.out.println("Jouer à une machine :");
             System.out.println(Affichage.violet + "     1. Magic Moolah" + Affichage.resetCouleur);
-            System.out.println(Affichage.jaune + "      2. AllIn" + Affichage.resetCouleur);
-            System.out.println(Affichage.cyan + "       3. Roulette" + Affichage.resetCouleur);
+            System.out.println(Affichage.jaune + "      2. Roulette. Déboquable au niveau 5" + Affichage.resetCouleur);
+            System.out.println(Affichage.cyan + "       3. AllIn. Débloquable au niveau 8" + Affichage.resetCouleur);
             System.out.println("Autre action :");
             System.out.println(Affichage.vert + "       4. Afficher vos informations" + Affichage.resetCouleur);
             System.out.println(Affichage.rouge + "      5. Quitter" +Affichage.resetCouleur);
@@ -49,11 +49,11 @@ public class Casino {
                     break;
                 // Machine AllIn
                 case 2:
-                    machine2.jouer(joueur, sc);
+                    machine3.jouer(joueur, sc);
                     break;
                 // Machine Roulette
                 case 3:
-                    machine3.Jouer(joueur, sc);
+                    machine2.jouer(joueur, sc);
                     break; 
                 case 4:
                     joueur.afficherInfo(sc, joueur);  // Afficher les informations du joueur
