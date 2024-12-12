@@ -3,6 +3,12 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
+
+/**
+ * Représente une machine à sous nommée "AllIn", dans laquelle les joueurs peuvent miser
+ * des jetons et tenter de gagner ou de perdre en fonction des résultats d'un 
+ * tableau de nombres et de symboles, selon une difficulté choisie.
+ */
 public class AllIn implements Machine {
     private int[] tab = new int[3];
     private int isSmaller; // stocke index du chiffre le plus petit dans le tableau
@@ -11,10 +17,12 @@ public class AllIn implements Machine {
     private int gain;
     private String description;
     public int nivJoueurMin;
-    //public boolean jouableAllIn; // teste si la machine est jouable, en publique pour que casino puisse y avoir accès
 
 
-    // constructeur de la classe AllIn
+    /**
+     * Constructeur de la machine AllIn. Initialise le tableau, la difficulté, la mise, 
+     * le gain, la description des règles du jeu et le niveau minimum du joueur.
+     */
     public AllIn() {
         this.tab = new int[3];
         this.difficulte = 0;
@@ -24,7 +32,12 @@ public class AllIn implements Machine {
         this.nivJoueurMin = 8;
     }
 
-
+    /**
+     * Vérifie si le joueur a un niveau suffisant pour jouer à la machine.
+     * 
+     * @param joueur Le joueur qui veut jouer.
+     * @return true si le joueur peut jouer, false sinon.
+     */
     public boolean verifNivJoueurMin(Joueur joueur) {
         boolean peutJouer = true;
         // teste si le niveau du joueur est assez haut pour pouvoir utiliser la machine
@@ -42,6 +55,13 @@ public class AllIn implements Machine {
     }
 
 
+    /**
+     * Lance la machine, génère les chiffres dans le tableau et le symbole 
+     * correspondant à la difficulté choisie. Le joueur gagne de l'expérience 
+     * basée sur la mise.
+     * 
+     * @param joueur Le joueur qui joue.
+     */
     public void lancer(Joueur joueur) {
         // crée tableau avec les chiffres et le symbole
 
@@ -57,13 +77,20 @@ public class AllIn implements Machine {
     }
 
 
+    /**
+     * Gère l'interaction avec le joueur pendant le jeu, permettant de choisir la 
+     * difficulté, de miser, de jouer et de redemander à rejouer.
+     * 
+     * @param joueur Le joueur qui joue.
+     * @param sc Scanner pour l'entrée du joueur.
+     */
     public void jouer(Joueur joueur, Scanner sc) {
         // permet de commencer à jouer
         boolean rejouer = true;
 
         System.out.print("\033[H\033[2J"); // Clear le terminal
         System.out.println("niv joueur : " + joueur.getNiveau());
-        System.out.println("niv min pour jour : " + this.nivJoueurMin);
+        System.out.println("niv min pour jouer : " + this.nivJoueurMin);
         System.out.println(this.description);
         if (!verifNivJoueurMin(joueur)){
             rejouer = false ;
@@ -90,7 +117,13 @@ public class AllIn implements Machine {
         }
     }
 
-
+    /**
+     * Demande au joueur s'il veut continuer à jouer ou non.
+     * 
+     * @param joueur Le joueur qui joue.
+     * @param sc Scanner pour l'entrée du joueur.
+     * @return true si le joueur veut rejouer, false sinon.
+     */
     public boolean demandeRejouer(Joueur joueur, Scanner sc) {
         // demande si l'utilisateur veut rejouer
         boolean rejouer = false, valide = false;
@@ -120,14 +153,20 @@ public class AllIn implements Machine {
         return rejouer;
     }
 
-
+    /**
+     * Affiche le tableau remplis.
+     */
     public void afficherResultat() {
         // Afficher le tableau avec les résultats
         char[] operateurs = { '-', '/', '+', '*' };
         System.out.println("[ " + this.tab[0] + " | " + this.tab[1] + " | " + operateurs[this.tab[2] + 1] + " ] \n");
     }
 
-
+    /**
+     * Vérifie le résultat du jeu et met à jour le solde du joueur en fonction des gains ou pertes.
+     * 
+     * @param joueur Le joueur qui joue.
+     */
     public void verifierResultat(Joueur joueur) {
         // Calculer les gains et les afficher
         // variable
@@ -174,7 +213,11 @@ public class AllIn implements Machine {
         this.gain = 0;
     }
 
-
+    /**
+     * Détermine le symbole à afficher en fonction de la difficulté choisie.
+     * 
+     * @return Le symbole (1 pour +, -1 pour -, 2 pour *, 0 pour /).
+     */
     private int trouverSymbole() {
         // trouve symbole en fonction de la difficulté
         int[] dif1 = { 1, 1, 1, 1, 1, -1, -1, -1, -1, -1 };
@@ -188,7 +231,11 @@ public class AllIn implements Machine {
         return tab.get(this.difficulte - 1)[nbAleatoire()];
     }
 
-
+    /**
+     * Demande au joueur de choisir la difficulté du jeu entre 1 et 3.
+     * 
+     * @param sc Scanner pour l'entrée du joueur.
+     */
     public void nivDifficulte(Scanner sc) {
         // Retourne le choix de difficulté de l'utilisateur entre 1 et 3
 
@@ -214,14 +261,23 @@ public class AllIn implements Machine {
         System.out.println("Vous avez choisi la difficulté " + difficulte + ", bonne chance !\n");
     }
 
-
+    /**
+     * Retourne un nombre aléatoire entre 1 et 9.
+     * 
+     * @return Un nombre entier aléatoire entre 1 et 9.
+     */
     private int nbAleatoire() {
         // Retourne un nombre aléatoire entre 1 et 9 en utilisant la fonction random
         Random rand = new Random();
         return rand.nextInt(10);
     }
 
-
+    /**
+     * Demande au joueur combien de jetons il veut miser et met à jour sa mise.
+     * 
+     * @param joueur Le joueur qui joue.
+     * @param sc Scanner pour l'entrée du joueur.
+     */
     public void miser(Joueur joueur, Scanner sc) {
         // demander au joueur combien il veut miser
         // variables
@@ -258,7 +314,14 @@ public class AllIn implements Machine {
         }
     }
 
-
+    /**
+     * Vérifie si la mise est suffisante pour la difficulté choisie, et permet 
+     * au joueur de changer sa mise, sa difficulté, ou d'arrêter de jouer.
+     * 
+     * @param joueur Le joueur qui joue.
+     * @param sc Scanner pour l'entrée du joueur.
+     * @return true si le joueur souhaite rejouer, false sinon.
+     */
     public boolean verifEntreeMise(Joueur joueur, Scanner sc) {
         // permet au joueur de choisir entre changer sa mise, changer de difficulté ou
         // arrêter de jouer quand la mise n'est pas suffisante pour la difficulté

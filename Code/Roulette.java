@@ -4,24 +4,39 @@ import java.util.Random;     // pour générer des nombres aléatoires
 import java.util.Scanner;    // pour lire les entrées clavier 
 
 
+/**
+ * La classe implémente une machine de jeu de type roulette.
+ * Elle permet à un joueur de parier sur un numéro, une couleur, ou une combinaison des deux.
+ * Le joueur peut jouer plusieurs parties avec des mises et des gains basés sur le résultat d'un tirage aléatoire.
+ * La classe gère également les niveaux d'expérience et de difficulté du jeu.
+ */
 public class Roulette implements Machine {
-        private int niveauMin; // niveau minimum pour jouer
-        private final ArrayList<Integer> rouges; // Liste des numéros rouges
-        private final ArrayList<Integer> noirs;  // Liste des numéros noirs
-        private int totalMise; // Total des mises pour chaque session de jeu
-        private int nombreParties; // Nombre de parties jouées
-        private ArrayList<String> resultats; // Liste pour stocker les résultats de chaque partie
+    private int niveauMin; // niveau minimum pour jouer
+    private final ArrayList<Integer> rouges; // Liste des numéros rouges
+    private final ArrayList<Integer> noirs;  // Liste des numéros noirs
+    private int totalMise; // Total des mises pour chaque session de jeu
+    private int nombreParties; // Nombre de parties jouées
+    private ArrayList<String> resultats; // Liste pour stocker les résultats de chaque partie
     
-        public Roulette(int experienceMin) {
-            this.niveauMin = 5;
-            this.rouges = initialiserRouges();
-            this.noirs = initialiserNoirs();
-            this.totalMise = 0;
-            this.nombreParties = 0;
-            this.resultats = new ArrayList<>(); // Initialisation de la liste des résultats
-        }
+    /**
+     * Constructeur de la classe Roulette.
+     * Initialise le niveau minimum, les listes de numéros rouges et noirs, 
+     * le total des mises, le nombre de parties et la liste des résultats.
+     */
+    public Roulette() {
+        this.niveauMin = 5;
+        this.rouges = initialiserRouges();
+        this.noirs = initialiserNoirs();
+        this.totalMise = 0;
+        this.nombreParties = 0;
+        this.resultats = new ArrayList<>(); // Initialisation de la liste des résultats
+    }
 
-        // Initialiser les numéros rouges
+    /**
+     * Initialise les numéros rouges de la roulette.
+     * 
+     * @return une liste d'entiers représentant les numéros rouges.
+     */
     private ArrayList<Integer> initialiserRouges() {
         ArrayList<Integer> rouges = new ArrayList<>();
         int[] rougesArr = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36};
@@ -31,7 +46,11 @@ public class Roulette implements Machine {
         return rouges;
     }
 
-    // Initialiser les numéros noirs
+    /**
+     * Initialise les numéros noirs de la roulette.
+     * 
+     * @return une liste d'entiers représentant les numéros noirs.
+     */
     private ArrayList<Integer> initialiserNoirs() {
         ArrayList<Integer> noirs = new ArrayList<>();
         int[] noirsArr = {2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35};
@@ -41,6 +60,11 @@ public class Roulette implements Machine {
         return noirs;
     }
     
+    /**
+     * Lance la machine de roulette et affiche un message de bienvenue.
+     * 
+     * @param joueur le joueur qui participe à la roulette.
+     */
     @Override
     public void lancer(Joueur joueur) {
     System.out.println("Bienvenue dans la Machine Roulette, " + joueur.getNom() + " !");
@@ -52,6 +76,12 @@ public class Roulette implements Machine {
     }
 
 
+    /**
+     * Permet au joueur de jouer une session de roulette avec un nombre de paris limité.
+     * 
+     * @param joueur le joueur qui participe à la roulette.
+     * @param scanner un objet Scanner pour lire les entrées clavier.
+     */
     public void jouer(Joueur joueur, Scanner scanner){
         lancer(joueur);
         boolean rejouer = true;
@@ -103,14 +133,23 @@ public class Roulette implements Machine {
         afficherResultat();
     }
 
-    // Vérifie si le joueur a l'expérience nécessaire pour jouer
+    /**
+     * Vérifie si le joueur a le niveau nécessaire pour jouer.
+     * 
+     * @param joueur le joueur qui tente de jouer.
+     * @return true si le joueur peut jouer, false sinon.
+     */
     boolean peutJouer(Joueur joueur) {
         return joueur.getNiveau() >= niveauMin;
     }
 
-  
-
-    
+    /**
+     * Effectue le pari du joueur, lui demande son choix de mise et le type de pari.
+     * 
+     * @param scanner un objet Scanner pour lire les entrées clavier.
+     * @param joueur le joueur qui effectue le pari.
+     * @throws InputMismatchException si l'entrée de l'utilisateur est invalide.
+     */
     private void effectuerPari(Scanner scanner, Joueur joueur) throws InputMismatchException {
         // Demander au joueur sa mise
         int mise = -1;
@@ -159,7 +198,14 @@ public class Roulette implements Machine {
         
     }
 
-   
+    /**
+     * Effectue un pari sur un numéro spécifique.
+     * 
+     * @param joueur le joueur qui effectue le pari.
+     * @param mise le montant de la mise.
+     * @param scanner un objet Scanner pour lire les entrées clavier.
+     * @throws InputMismatchException si l'entrée de l'utilisateur est invalide.
+     */
     private void parierNumero(Joueur joueur, int mise, Scanner scanner ) throws InputMismatchException{
         System.out.print("Choisissez un numéro (1 à 36) : ");
         if (!scanner.hasNextInt()) {
@@ -185,6 +231,14 @@ public class Roulette implements Machine {
         
     }
 
+    /**
+     * Permet au joueur de parier sur une couleur (rouge ou noir) de la roulette.
+     * 
+     * @param joueur Le joueur qui effectue le pari.
+     * @param mise La mise effectuée par le joueur.
+     * @param scanner L'objet Scanner utilisé pour obtenir l'entrée de l'utilisateur.
+     * @throws InputMismatchException Si l'entrée de l'utilisateur pour la couleur est invalide.
+     */
     private void parierCouleur(Joueur joueur, int mise, Scanner scanner) throws InputMismatchException {
         System.out.print("Choisissez une couleur (rouge ou noir) : ");
         String couleurPariee = scanner.next().toLowerCase();
@@ -208,6 +262,12 @@ public class Roulette implements Machine {
        
     }
 
+    /**
+     * Permet au joueur de parier sur le numéro zéro de la roulette.
+     * 
+     * @param joueur Le joueur qui effectue le pari.
+     * @param mise La mise effectuée par le joueur.
+     */
     private void parierZero(Joueur joueur, int mise) {
         int resultat = new Random().nextInt(37);
         System.out.println("La roulette a tourné... le numéro est : " + resultat);
@@ -223,6 +283,14 @@ public class Roulette implements Machine {
     }
 
     
+    /**
+     * Permet au joueur de parier à la fois sur un numéro et sur une couleur.
+     * 
+     * @param joueur Le joueur qui effectue le pari.
+     * @param mise La mise effectuée par le joueur.
+     * @param scanner L'objet Scanner utilisé pour obtenir l'entrée de l'utilisateur.
+     * @throws InputMismatchException Si l'entrée de l'utilisateur pour le numéro ou la couleur est invalide.
+     */
     private void parierNumeroEtCouleur(Joueur joueur, int mise, Scanner scanner)throws InputMismatchException {
         System.out.println("Choisissez un numéro (1 à 36) : ");
         int numeroPari = scanner.nextInt();
@@ -252,7 +320,9 @@ public class Roulette implements Machine {
         
     }
 
-    // Méthode pour afficher les résultats finaux
+    /**
+     * Affiche les résultats finaux de la session de jeu.
+     */
     @Override
     public void afficherResultat() {
         System.out.println("\nRésultats des parties :");
@@ -266,6 +336,11 @@ public class Roulette implements Machine {
         
     }
 
+    /**
+     * Vérifie les résultats du joueur et lui accorde de l'expérience.
+     * 
+     * @param joueur le joueur dont les résultats sont vérifiés.
+     */
     @Override
     public void verifierResultat(Joueur joueur) {
     boolean aGagne = false;
