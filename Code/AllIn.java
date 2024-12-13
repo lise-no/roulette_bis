@@ -105,7 +105,7 @@ public class AllIn implements Machine {
             // choix de la mise, vérification de la mise et choix de la difficulté
             nivDifficulte(sc);
             miser(joueur, sc);
-            verifEntreeMise(joueur, sc, rejouer);
+            rejouer = verifEntreeMise(joueur, sc);
 
             // permet au joueur d'arrêter de jouer avant d'avoir créé un tableau
             if (rejouer) {
@@ -213,13 +213,7 @@ public class AllIn implements Machine {
         }
 
         // modifie dans joueur le nombre de jetons qu'il obtient après avoir joué
-        //joueur.modifSolde(this.mise);
-        if(gain >= 0){
-            joueur.modifSolde(mise);
-        }
-        else{
-            joueur.modifSolde(-mise);
-        }
+        joueur.modifSolde(this.mise);
         this.mise = 0;
         this.gain = 0;
     }
@@ -326,18 +320,19 @@ public class AllIn implements Machine {
     }
 
     /**
-     * Vérifie si la mise est suffisante pour la difficulté choisie, et permet 
+     * Retourne un booléan pour savoir si le joueur rejoue ou non, vérifie si la mise est suffisante pour la difficulté choisie, et permet 
      * au joueur de changer sa mise, sa difficulté, ou d'arrêter de jouer.
      * 
-     * @param joueur Le joueur qui joue.
+     * @param joueur Joueur qui joue.
      * @param sc Scanner pour l'entrée du joueur.
+     * @return playAgain boolean pour savoir si le joueur rejoue ou non.
      */
-    public void verifEntreeMise(Joueur joueur, Scanner sc, boolean rejouer) {
+    public boolean verifEntreeMise(Joueur joueur, Scanner sc) {
         // permet au joueur de choisir entre changer sa mise, changer de difficulté ou
         // arrêter de jouer quand la mise n'est pas suffisante pour la difficulté
         int exit = 0;
         int[] misePourChaqueDifficulte = { (joueur.getSolde() + this.mise) * 25 / 100, (joueur.getSolde() + this.mise) * 50 / 100, (joueur.getSolde() + this.mise)  };
-        boolean valide = false;
+        boolean valide = false, playAgain = true;
 
         // si la mise est trop petite pour la difficulté choisie
         if (this.mise < misePourChaqueDifficulte[this.difficulte - 1]) {
@@ -364,20 +359,21 @@ public class AllIn implements Machine {
         if (exit == 1) {
             this.mise = 0;
             miser(joueur, sc);
-            verifEntreeMise(joueur, sc, rejouer);
+            playAgain = verifEntreeMise(joueur, sc);
         }
         // si le joueur veut changer sa difficulté
-        if (exit == 2) {
+        else if (exit == 2) {
             this.mise = 0;
             nivDifficulte(sc);
             miser(joueur, sc);
-            verifEntreeMise(joueur, sc, rejouer);
+            playAgain = verifEntreeMise(joueur, sc);
         }
         // si le joueur veut arrêter de jouer
-        if (exit == 3) {
+        else if (exit == 3) {
             this.mise = 0;
-            rejouer = demandeRejouer(joueur, sc);
+            playAgain = false;
         }
+        return playAgain;
     }
 
 }
