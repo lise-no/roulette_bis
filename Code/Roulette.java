@@ -107,7 +107,14 @@ public class Roulette implements Machine {
 
         while (rejouer && nombreParties < 10) {
             if (!peutJouer(joueur)) {
+                System.out.print("\033[H\033[2J"); // Clear le terminal
                 System.out.println(Affichage.rouge + "Votre niveau est insuffisant pour jouer à cette machine." + Affichage.resetCouleur);
+            // Pause de deux secondes pour qu'on voit le message
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
                 return;
             }
             System.out.println(Affichage.blanc + "Vous commencez avec " + joueur.getSolde() + " jetons." + Affichage.resetCouleur);
@@ -168,11 +175,16 @@ public class Roulette implements Machine {
         System.out.println(Affichage.cyan + "Vous avez choisi le pari : " + choix + "." + Affichage.resetCouleur);
 
         switch (choix) {
-            case 1 -> parierNumero(joueur, mise, scanner);
-            case 2 -> parierCouleur(joueur, mise, scanner);
-            case 3 -> parierZero(joueur, mise);
-            case 4 -> parierNumeroEtCouleur(joueur, mise, scanner);
-            default -> throw new IllegalArgumentException("Option de pari invalide.");
+            case 1 :
+                parierNumero(joueur, mise, scanner);
+            case 2 :
+                parierCouleur(joueur, mise, scanner);
+            case 3 : 
+                parierZero(joueur, mise);
+            case 4 : 
+                parierNumeroEtCouleur(joueur, mise, scanner);
+            default :
+                throw new IllegalArgumentException("Option de pari invalide.");
         }
     }
 
