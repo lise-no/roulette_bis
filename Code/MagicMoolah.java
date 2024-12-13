@@ -1,6 +1,12 @@
 import java.util.Scanner;
 import java.util.InputMismatchException; // pour pouvoir utliser l'exception
 
+/**
+ * La classe MagicMoolah représente une machine à sous classique.
+ * Elle permet à un joueur de parier des jetons, de lancer un tirage avec des rouleaux et de calculer les gains
+ * en fonction des symboles alignés ou des événements spéciaux.
+ * Cette machine offre la possibilité de lancer un tirage simple ou 20 d'un coup.
+ */
 public class MagicMoolah implements Machine{
     private String[][] rouleaux = new String[3][4];
     private int mise;
@@ -11,21 +17,30 @@ public class MagicMoolah implements Machine{
     public int miseTotale = 0; // Permet d'avoir un suivi général des mises sur l'ensemble des parties
     private String nom;
     private String description;
-    private int volatilite;
     private String[] symboles = {"🍒", "🍀", "💎", "💰", "🎲"};
-    private double[] probabilites = {0.35, 0.3, 0.01, 0.19, 0.15}; // Permet de gérer la probabilité d'apparition de chaque symbole
+    private double[] probabilites = {0.40, 0.23, 0.05, 0.19, 0.13}; // Permet de gérer la probabilité d'apparition de chaque symbole
     private int[] multiplicateur = {5, 10, 700, 50, 200}; // Permet de gérer le multiplicateur de chaque symbole pour le calcul des gains
     private int compteurDiamant; // Un compteur qui permet de vérifier l'évenement des diamants
     private boolean event; // Un flag pour vérifier la présence d'un évenement
 
-    // Constructeur
+    /**
+     * Constructeur par défaut de la machine à sous Magic Moolah.
+     * Initialise les attributs de la machine avec des valeurs par défaut.
+     */
     public MagicMoolah(){
         this.nom = "Magic Moolah";
-        this.description = "Une machine à sous en 3x4 dans laquelle il faut aligner 4 symboles";
+        this.description = "MagicMoolah est la machine à sous classique:\n"
+                        + "Elle propose des tirages simples ou multiples (jusqu'à 20 tirages consécutifs), vous permet de gagner \n" 
+                        + "des jetons en fonction symboles alignés et d'un événement spécial (3+ diamants).\n";
         this.mise = 5;
         this.gain = 0;
     }
 
+    /**
+     * Lance un tirage de la machine à sous et vérifie les gains du joueur.
+     *
+     * @param joueur Le joueur qui joue à la machine à sous.
+     */
     @Override
     public void lancer(Joueur joueur) {
         // Si la mise est valide, procéder au tirage
@@ -46,9 +61,13 @@ public class MagicMoolah implements Machine{
         verifierResultat(joueur);
     }
     
-
-
-    // Tire des symboles par apport à la probabilité associée à chaque symbole 
+    /**
+     * Tire un symbole aléatoire en fonction de la probabilité associée à chaque symbole.
+     *
+     * @param tabS Le tableau des symboles.
+     * @param tabP Le tableau des probabilités associées aux symboles.
+     * @return Le symbole tiré.
+     */
     public String tirerSymbole(String[] tabS, double[] tabP){
         double nbAleatoire = Math.random();
         double somme = 0.0;
@@ -66,13 +85,18 @@ public class MagicMoolah implements Machine{
         return tabS[0];
     }
 
-    // Remet à 0 les compteurs et flag
+    /**
+     * Remet à zéro les compteurs et le flag des événements.
+     */
     private void reset(){
         gain = 0;
         compteurDiamant = 0;
         event = false;
     }
 
+    /**
+     * Affiche les rouleaux remplis.
+     */
     @Override
     public void afficherResultat(){
         // Afficher le tableau avec les résultats
@@ -89,7 +113,11 @@ public class MagicMoolah implements Machine{
         System.out.println(); // Espace entre les lancers
     }
     
-    // Calculer les gains et les afficher
+    /**
+     * Vérifie les résultats du tirage et calcule les gains du joueur.
+     *
+     * @param joueur Le joueur qui joue à la machine à sous.
+     */
     @Override
     public void verifierResultat(Joueur joueur){
         compteurDiamant = 0;  // Réinitialiser compteurDiamant ici pour chaque vérification
@@ -113,7 +141,11 @@ public class MagicMoolah implements Machine{
         }
     }
 
-    // Verifie si les symboles sont alignés
+    /**
+     * Vérifie si une ligne de rouleaux est composée du même symbole (alignement).
+     *
+     * @param i L'indice de la ligne à vérifier.
+     */
     public void eventAligne(int i){
         // On vérifie que une ligne complete est composée des meme syboles
         if(rouleaux[i][0].equals(rouleaux[i][1]) && rouleaux[i][1].equals(rouleaux[i][2]) && rouleaux[i][2].equals(rouleaux[i][3])){
@@ -130,7 +162,9 @@ public class MagicMoolah implements Machine{
         }
     }
 
-    // Méthode pour gérer les gains si 3 diamants ou plus sont présents
+    /**
+     * Vérifie si l'événement des diamants (3 diamants ou plus) est réalisé et calcule les gains associés.
+     */
     public void eventDiamant(){
         // Si 3 diamants ou plus sont présents, afficher les diamants et calculer les gains
         if(compteurDiamant >= 3){
@@ -164,7 +198,11 @@ public class MagicMoolah implements Machine{
         }
     }
 
-    // Lance la machine 20 fois
+    /**
+     * Effectue 20 tirages consécutifs et calcule les gains et mises totales.
+     *
+     * @param joueur Le joueur qui joue à la machine à sous.
+     */
     public void lancerMultiple(Joueur joueur) {
         miseMultiple = 0;
         gainMultiple = 0;
@@ -206,7 +244,11 @@ public class MagicMoolah implements Machine{
     }
     
 
-    // Lance la machine une fois
+    /**
+     * Effectue un tirage simple et calcule les gains du joueur.
+     *
+     * @param joueur Le joueur qui joue à la machine à sous.
+     */
     public void lancerSimple(Joueur joueur){
         lancer(joueur);
         // On retire au solde du joueur la mise et on ajoute le gain
@@ -218,6 +260,11 @@ public class MagicMoolah implements Machine{
         bilanSimple(joueur);
     }
 
+    /**
+     * Affiche le bilan après 20 tirages.
+     *
+     * @param joueur Le joueur qui joue à la machine à sous.
+     */
     public void bilanMultiple(Joueur joueur){
         // On augmente le gain depuis le lancement du programme
         gainTotal += gainMultiple;
@@ -242,6 +289,11 @@ public class MagicMoolah implements Machine{
         }
     }
 
+    /**
+     * Affiche le bilan après un tirage simple.
+     *
+     * @param joueur Le joueur qui joue à la machine à sous.
+     */
     public void bilanSimple(Joueur joueur){
         // On augmente le gain depuis le lancement du programme
         gainTotal += gain;
@@ -258,7 +310,12 @@ public class MagicMoolah implements Machine{
         System.out.println("Bonne chance pour le prochain tirage!");
     }
       
-    // Modifie la mise avec validation
+    /**
+     * Modifie la mise du joueur avec validation.
+     *
+     * @param joueur Le joueur qui modifie sa mise.
+     * @param sc     Le scanner pour lire l'entrée de l'utilisateur.
+     */
     public void modifMise(Joueur joueur, Scanner sc) {
         // On met à false par défaut pour vérifier la mise
         boolean validMise = false;
@@ -301,7 +358,13 @@ public class MagicMoolah implements Machine{
     
     
 
-    // Demander à l'utilisateur s'il veut continuer à jouer
+    /**
+     * Demande au joueur s'il souhaite continuer à jouer.
+     *
+     * @param sc     Le scanner pour lire l'entrée de l'utilisateur.
+     * @param joueur Le joueur qui joue à la machine à sous.
+     * @return true si le joueur souhaite continuer à jouer, sinon false.
+     */
     public boolean demanderContinuer(Scanner sc, Joueur joueur) {
         System.out.print("Voulez-vous continuer à jouer ? (Oui/Non) : ");
         // On prend l'entrée de l'utilisateur
@@ -328,7 +391,13 @@ public class MagicMoolah implements Machine{
     
     
 
-    // Méthode main pour relancer sans utiliser la classe main
+    /**
+     * Méthode qui permet de démarrer une session de jeu. Elle gère le processus de modification de la mise et
+     * lance le menu de la machine à sous Magic Moolah.
+     * 
+     * @param joueur L'objet Joueur qui participe à la partie.
+     * @param sc L'objet Scanner utilisé pour lire les entrées de l'utilisateur.
+     */
     public void jouer(Joueur joueur, Scanner sc) {
         try {    
             // Changer la mise
@@ -342,7 +411,14 @@ public class MagicMoolah implements Machine{
         menuMagicMoolah(joueur, sc);
     }
 
-    // Menu pour se déplacer dans la machine
+    /**
+     * Méthode qui affiche un menu interactif permettant au joueur de choisir l'option qu'il souhaite dans la machine. 
+     * Cette méthode permet au joueur de lancer un tirage simple ou multiple, d'afficher les gains
+     * et les mises totales, et de continuer ou arrêter la session de jeu.
+     * 
+     * @param joueur L'objet Joueur qui participe à la partie.
+     * @param sc L'objet Scanner utilisé pour lire les entrées de l'utilisateur.
+     */
     public void menuMagicMoolah(Joueur joueur, Scanner sc) {
         // On met par défaut continuer à vrai afin de demander au joueur s'il voudra rejouer
         boolean continuer = true;
@@ -350,6 +426,7 @@ public class MagicMoolah implements Machine{
             System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisamment de lignes pour faire apparaître le terminal vide)
             System.out.println("---" + Affichage.violet + '+' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
             System.out.println(Affichage.violet + "=================MagicMoolah=================\n" + Affichage.resetCouleur);
+            System.out.println("Descritpion : " + description + '\n');
             System.out.println("Choisissez l'option :");
             System.out.println(Affichage.jaune + "1. Lancer un tirage simple (Un seul tirage)");
             System.out.println(Affichage.jaune + "2. Lancer un tirage multiple (20 tirages)");

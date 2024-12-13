@@ -1,6 +1,10 @@
 import java.util.Scanner;
 import java.util.InputMismatchException; // pour pouvoir utliser l'exception
 
+/**
+ * Classe représentant un joueur dans un jeu.
+ * Cette classe gère les informations du joueur telles que son nom, son niveau, son expérience, son solde et les interactions avec ces informations.
+ */
 public class Joueur {
     private String nom;
     private int niveau;
@@ -8,7 +12,11 @@ public class Joueur {
     private int barreExperience;
     private int solde;
 
-    // Constructeur
+    /**
+     * Constructeur de la classe Joueur.
+     * Initialise les attributs du joueur avec des valeurs par défaut avec le nom, le niveau, l'experience nexcessaire pour passer au prochain niveau,
+     * la barre d'experience et le solde.
+     */
     public Joueur() {
         this.nom = "";
         this.niveau = 1;  // Niveau de départ
@@ -17,7 +25,12 @@ public class Joueur {
         this.solde = 0;  // Solde initial
     }
 
-    // Choisir la difficulté et initialiser le solde
+    /**
+     * Permet au joueur de choisir la difficulté du jeu et d'initialiser son solde en fonction du choix.
+     * Affiche les options de difficulté et gère les erreurs d'entrée.
+     *
+     * @param sc Le scanner utilisé pour lire l'entrée de l'utilisateur.
+     */
     public void difficulte(Scanner sc) {
         int choix;
         System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisament de lignes pour faire apparaître le terminal vide)
@@ -62,24 +75,29 @@ public class Joueur {
     }
     
 
-    // Méthode pour modifier le solde
-    public void modifSolde(int montant) {
-        if (solde - montant >= 0) {
-            this.solde += montant;  // On ajoute le montant au solde
-        } else {
-            System.out.println(Affichage.rouge + "Solde insuffisant." + Affichage.resetCouleur);
-        }
-    }
-    /*// Méthode pour modifier le solde
+    /**
+     * Modifie le solde du joueur.
+     * Si le montant est positif, il est ajouté au solde. Si le montant est négatif, il est retiré du solde,
+     * mais seulement si le solde est suffisant pour couvrir le retrait.
+     *
+     * @param montant Le montant à ajouter ou retirer au solde du joueur.
+     */
     public void modifSolde(int montant) {
         if (montant < 0 && solde + montant < 0) { // Vérification pour les pertes
             System.out.println("Solde insuffisant. Impossible de miser ou de retirer " + Math.abs(montant) + " jetons.");
         } else {
             this.solde += montant;
         }
-    }*/
+    }
 
-    // Méthode pour gagner de l'expérience
+
+    /**
+     * Permet au joueur de gagner de l'expérience.
+     * Si l'expérience du joueur dépasse le seuil nécessaire pour passer au niveau supérieur, il passe au niveau suivant.
+     * Le seuil d'expérience pour le prochain niveau est augmenté de 50% à chaque niveau supérieur.
+     *
+     * @param experienceGagnee L'expérience gagnée par le joueur.
+     */
     public void gagnerExperience(int experienceGagnee) {
         this.barreExperience += experienceGagnee;  // On ajoute l'expérience gagnée
         // Vérifier si l'expérience du joueur atteint ou dépasse le seuil
@@ -92,7 +110,12 @@ public class Joueur {
         }
     }
 
-    // Méthode pour afficher les informations du joueur
+    /**
+     * Affiche les informations du joueur, y compris son nom, son niveau, son expérience et son solde.
+     *
+     * @param sc Le scanner utilisé pour lire l'entrée de l'utilisateur.
+     * @param joueur L'instance du joueur dont les informations doivent être affichées.
+     */
     public void afficherInfo(Scanner sc, Joueur joueur) {
             System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisament de lignes pour faire appaitre le terminal vide)
             System.out.println("--+" + Affichage.violet + '-' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
@@ -107,7 +130,13 @@ public class Joueur {
             sc.nextLine();
     }
 
-    // Méthode pour demander le nom du joueur
+    /**
+     * Demande au joueur de saisir son nom et initialise sa difficulté ainsi que son solde.
+     * Cette méthode est appelée lors de la création du joueur.
+     *
+     * @param sc Le scanner utilisé pour lire l'entrée de l'utilisateur.
+     * @param joueur L'instance du joueur à initialiser.
+     */
     public void initialisationJoueur(Scanner sc, Joueur joueur) {
         System.out.print("\033[H\033[2J"); // Clear le terminal (On saute suffisament de lignes pour faire appaitre le terminal vide)
         System.out.println("+--" + Affichage.violet + '-' + Affichage.jaune + '-' + Affichage.cyan + '-'); // Permet de savoir où on se trouve
@@ -116,24 +145,49 @@ public class Joueur {
         this.nom = sc.nextLine();  // Lit l'entrée et l'assigne au nom du joueur
         difficulte(sc);  // Choisit la difficulté et initialise le solde
     }
-    //pour accéder au nom de joueur dans les autres class
+
+    /**
+     * Retourne le nom du joueur.
+     *
+     * @return Le nom du joueur.
+     */
     public String getNom(){
         return this.nom;
 
     }
-    //pour accéder au solde du joueur 
+
+    /**
+     * Retourne le solde du joueur.
+     *
+     * @return Le solde actuel du joueur.
+     */
     public int getSolde(){
         return solde;
     }
-    //pour accéder a l'expérience du joueur 
+
+    /**
+     * Retourne l'expérience actuelle du joueur.
+     *
+     * @return L'expérience actuelle du joueur.
+     */
     public int getBarreExp(){
         return this.barreExperience;
     }
-    //pour accéder au niveau du joueur 
+
+    /**
+     * Retourne le niveau actuel du joueur.
+     *
+     * @return Le niveau actuel du joueur.
+     */
     public int getNiveau(){
         return this.niveau;
     }
-    //pour accéder au niveau
+
+    /**
+     * Incrémente le niveau du joueur de 1 et retourne le nouveau niveau.
+     *
+     * @return Le niveau du joueur après l'incrémentation.
+     */
     public int ajouterNiveau(){
        return this.niveau++;
     }

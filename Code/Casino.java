@@ -2,15 +2,25 @@ import java.util.List;
 import java.util.Scanner; // Pour gerer les entrées utilisateur
 import java.util.InputMismatchException; // pour pouvoir utliser l'exception
 
+/**
+ * La classe Casino gère les opérations du casino, y compris l'affichage du menu et l'interaction avec les machines de jeux.
+ * Elle permet à un joueur de choisir parmi plusieurs machines et d'effectuer différentes actions.
+ */
 public class Casino {
      // Créer les objets machine
     MagicMoolah machine1 = new MagicMoolah();
     AllIn machine2 = new AllIn();
-    Roulette machine3 = new Roulette(5);
+    Roulette machine3 = new Roulette();
 
     boolean continuer = true;  // Contrôle du menu
 
-    // Menu du casino
+    /**
+     * Affiche le menu principal du casino et permet au joueur de choisir une action.
+     * Le menu permet de jouer à différentes machines, d'afficher les informations du joueur, ou de quitter le jeu.
+     *
+     * @param joueur L'objet Joueur représentant le joueur actuel.
+     * @param sc     L'objet Scanner pour lire les entrées utilisateur.
+     */
     public void menu(Joueur joueur, Scanner sc){
         // Tant que le joueur veut jouer
         while (continuer) {
@@ -21,8 +31,8 @@ public class Casino {
             System.out.println("\nQue voulez-vous faire ?");
             System.out.println("Jouer à une machine :");
             System.out.println(Affichage.violet + "     1. Magic Moolah" + Affichage.resetCouleur);
-            System.out.println(Affichage.jaune + "      2. AllIn" + Affichage.resetCouleur);
-            System.out.println(Affichage.cyan + "       3. Roulette" + Affichage.resetCouleur);
+            System.out.println(Affichage.jaune + "      2. Roulette. Déboquable au niveau 5" + Affichage.resetCouleur);
+            System.out.println(Affichage.cyan + "       3. AllIn. Débloquable au niveau 8" + Affichage.resetCouleur);
             System.out.println("Autre action :");
             System.out.println(Affichage.vert + "       4. Afficher vos informations" + Affichage.resetCouleur);
             System.out.println(Affichage.rouge + "      5. Quitter" +Affichage.resetCouleur);
@@ -49,11 +59,11 @@ public class Casino {
                     break;
                 // Machine AllIn
                 case 2:
-                    machine2.jouer(joueur, sc);
+                    machine3.jouer(joueur, sc);
                     break;
                 // Machine Roulette
                 case 3:
-                    machine3.lancer(joueur);
+                    machine2.jouer(joueur, sc);
                     break; 
                 case 4:
                     joueur.afficherInfo(sc, joueur);  // Afficher les informations du joueur
