@@ -65,6 +65,7 @@ java -cp out Main
 - Tests unitaires : ajouter JUnit pour tester les calculs de gains / logique métier.
 - Internationalisation : actuellement tout est en français ; prévoir des ressources pour d'autres langues si nécessaire.
 - Séparation UI / logique : la logique métier mélange affichage console et calculs ; extraire la logique pure faciliterait le test unitaire.
+- création d'interface graphique
 
 ## Développement local
 - Recommandé : installer un IDE (IntelliJ IDEA, Eclipse, VS Code + extension Java).
